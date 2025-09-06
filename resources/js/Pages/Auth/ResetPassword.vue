@@ -36,6 +36,10 @@ const submit = () => {
     <GuestLayout>
         <Head title="Reset Password" />
 
+        <template #header>
+            <h5>Reset Password</h5>
+        </template>
+
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="email" value="Email" />
@@ -84,7 +88,7 @@ const submit = () => {
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <Button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <Button type="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Reset Password
                 </Button>
             </div>

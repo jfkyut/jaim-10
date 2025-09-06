@@ -34,13 +34,17 @@ const submit = () => {
     <GuestLayout>
         <Head title="Log in" />
 
+        <template #header>
+            <h5>Sign in to our platform</h5>
+        </template>
+
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
         </div>
 
         
         <form @submit.prevent="submit" class="space-y-6" action="#">
-            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h5>
+
             <div>
                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
                 <InputText type="email" v-model="form.email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required />

@@ -34,7 +34,12 @@ const submit = () => {
     <GuestLayout>
         <Head title="Register" />
 
+        <template #header>
+            <h5>Create Account</h5>
+        </template>
+
         <form @submit.prevent="submit">
+            
             <div class="flex gap-2">
                 <div>
                     <InputLabel for="first_name" value="First name" />

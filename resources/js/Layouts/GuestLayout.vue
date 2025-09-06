@@ -14,7 +14,13 @@ import { Link } from '@inertiajs/vue3';
         <div
             class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-zinc-800 shadow-md overflow-hidden sm:rounded-lg"
         >
-            <slot />
+            <header class="text-xl uppercase mb-6 font-medium text-gray-900 dark:text-white">
+                <slot name="header" />
+            </header>
+
+            <div>
+                <slot />
+            </div>
         </div>
 
     </div>

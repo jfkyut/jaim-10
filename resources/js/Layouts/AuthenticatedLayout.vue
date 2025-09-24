@@ -13,35 +13,48 @@ import { useAuthLayoutStore } from '@/Stores/authlayout';
 import AudioPlayer from '@/Components/AudioPlayer.vue';
 import { useAudioStore } from '@/Stores/audio';
 import { storeToRefs } from 'pinia';
-import { ref, provide } from 'vue';
+import { ref, provide, onMounted, onUnmounted } from 'vue';
 
 const { toggleSidebar } = useAuthLayoutStore();
-
 const { sidebarOpen } = storeToRefs(useAuthLayoutStore());
-
 const audioStore = useAudioStore();
 const { currentSong } = storeToRefs(audioStore);
 
 const currentGlobalAudio = ref(null);
 provide('currentAudio', currentGlobalAudio);
 
+const isMobile = ref(window.innerWidth < 768);
+
+const handleResize = () => {
+    isMobile.value = window.innerWidth < 768;
+    if (isMobile.value && sidebarOpen.value) {
+        toggleSidebar();
+    }
+};
+
+onMounted(() => {
+    window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('resize', handleResize);
+});
 </script>
 
 <template>
-    <div class="h-screen flex bg-zinc-100 dark:bg-zinc-900">
+    <div class="min-h-screen flex bg-zinc-100 dark:bg-zinc-900">
         <!-- Sidebar -->
         <div :class="[
-            'transition-all duration-300 ease-in-out bg-white dark:bg-zinc-800 border-r border-zinc-100 dark:border-zinc-700',
-            sidebarOpen ? 'w-64' : 'w-20'
+            'transition-all duration-300 ease-in-out bg-white dark:bg-zinc-800 border-r border-zinc-100 dark:border-zinc-700 h-[100vh] z-[100] overflow-y-auto',
+            'fixed md:relative z-30',
+            sidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0 md:w-20',
         ]">
             <!-- Logo -->
             <div class="h-16 flex items-center px-4">
                 <Link :href="route('welcome')" class="flex items-center">
                     <ApplicationLogo class="block h-9 w-auto fill-current text-zinc-800 dark:text-zinc-200" />
                     <header v-if="sidebarOpen" class="ml-3 font-inter text-base font-medium tracking-wide text-zinc-800 dark:text-zinc-200">
-                        <h1>
-                            JAIM
-                        </h1>
+                        <h1>JAIM</h1>
                     </header>
                 </Link>
             </div>
@@ -58,10 +71,7 @@ provide('currentAudio', currentGlobalAudio);
                     <i class="ri-search-line"></i>
                     <span v-if="sidebarOpen" class="ml-2">Explore Music</span>
                 </NavLink>
-                <NavDropdown
-                    title="Library"
-                    :active="route().current('test.*')"
-                >
+                <NavDropdown title="Library" :active="route().current('test.*')">
                     <template #icon>
                         <i class="ri-music-2-line"></i>
                     </template>
@@ -73,10 +83,7 @@ provide('currentAudio', currentGlobalAudio);
                         <i class="ri-history-line"></i>
                         <span class="ms-2">Recents</span>
                     </NavLink>
-                    <NavDropdown
-                        title="Playlist"
-                        :active="route().current('test.*')"
-                    >
+                    <NavDropdown title="Playlist" :active="route().current('test.*')">
                         <template #icon>
                             <i class="ri-play-list-line"></i>
                         </template>
@@ -95,11 +102,14 @@ provide('currentAudio', currentGlobalAudio);
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
+        <div class="flex-1 flex flex-col w-full">
             <!-- Top Navigation -->
-            <div class="bg-white dark:bg-zinc-800 border-b border-zinc-100 dark:border-zinc-700 h-16 flex items-center justify-between px-4">
+            <div class="bg-white dark:bg-zinc-800 border-b border-zinc-100 dark:border-zinc-700 h-16 flex items-center justify-between px-4 sticky top-0 z-20">
                 <!-- Sidebar Toggle Button -->
-                <button @click="toggleSidebar" class="text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300">
+                <button 
+                    @click="toggleSidebar" 
+                    class="text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
+                >
                     <i class="ri-menu-4-line text-[1.5rem]"></i>
                 </button>
 
@@ -108,7 +118,7 @@ provide('currentAudio', currentGlobalAudio);
                 <!-- User Dropdown -->
                 <Dropdown>
                     <template #trigger>
-                        <Button severity="secondary" type="button">
+                        <Button severity="secondary" type="button" class="truncate max-w-[200px]">
                             {{ $page.props.auth.user.email }}
                         </Button>
                     </template>
@@ -125,18 +135,27 @@ provide('currentAudio', currentGlobalAudio);
             </div>
 
             <!-- Main Content Area -->
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-zinc-100 dark:bg-zinc-900 p-6 relative">
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-zinc-100 dark:bg-zinc-900 p-4 md:p-6 relative">
                 <slot />
 
-                <div v-if="currentSong" class="absolute bottom-2 left-2 right-2 max-w-4xl mx-auto">
-                    <AudioPlayer 
-                        :src="`/storage/${currentSong.file_path}`"
-                        :title="currentSong.title"
-                        :autoplay="true"
-                    />
+                <!-- Audio Player -->
+                <div v-if="currentSong" class="fixed bottom-0 left-0 right-0 z-40 px-2 md:px-4 pb-2 md:pb-4">
+                    <div class="max-w-4xl mx-auto">
+                        <AudioPlayer 
+                            :src="`/storage/${currentSong.file_path}`"
+                            :title="currentSong.title"
+                            :autoplay="true"
+                        />
+                    </div>
                 </div>
             </main>
-            
         </div>
+
+        <!-- Overlay for mobile sidebar -->
+        <div 
+            v-if="sidebarOpen && isMobile" 
+            class="fixed inset-0 bg-black bg-opacity-50 z-20"
+            @click="toggleSidebar"
+        ></div>
     </div>
 </template>

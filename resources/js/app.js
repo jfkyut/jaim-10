@@ -11,6 +11,12 @@ import Aura from '@primeuix/themes/aura';
 import Material from '@primeuix/themes/material';
 import Lara from '@primeuix/themes/lara';
 import Nora from '@primeuix/themes/nora';
+import { createPinia } from 'pinia'
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
+const pinia = createPinia()
+
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -21,6 +27,22 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
+            .use(pinia)
+            .use(Toast, {
+                position: "top-center",
+                timeout: 5000,
+                closeOnClick: true,
+                pauseOnFocusLoss: true,
+                pauseOnHover: true,
+                draggable: true,
+                draggablePercent: 0.6,
+                showCloseButtonOnHover: false,
+                hideProgressBar: true,
+                closeButton: "button",
+                icon: true,
+                rtl: false,
+                progressBar: true,
+            })
             .use(PrimeVue, {
                 theme: {
                     preset: Material

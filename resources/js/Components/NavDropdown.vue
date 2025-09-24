@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed, inject } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import { storeToRefs } from 'pinia';
+import { useAuthLayoutStore } from '@/Stores/authlayout';
 
 const props = defineProps({
     title: {
@@ -14,7 +16,10 @@ const props = defineProps({
 });
 
 // Inject sidebarOpen from parent
-const sidebarOpen = inject('sidebarOpen', ref(true));
+// const { sidebarOpen } = inject('auth-layout-context');
+
+const { sidebarOpen } = storeToRefs(useAuthLayoutStore())
+
 const isOpen = ref(false);
 
 const toggle = () => {
@@ -57,7 +62,7 @@ const buttonClasses = computed(() => {
             v-show="isOpen && sidebarOpen"
             class="mt-1 space-y-1"
         >
-            <div class="pl-4 border-l border-zinc-200 dark:border-zinc-600">
+            <div class="pl-4 border-l border-zinc-200 dark:border-zinc-600 space-y-2">
                 <slot />
             </div>
         </div>

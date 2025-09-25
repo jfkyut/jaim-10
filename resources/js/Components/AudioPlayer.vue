@@ -28,7 +28,6 @@ const {
     currentTime, 
     duration, 
     volume,
-    seeking,
     muted,
 } = useMediaControls(audio, {
     volumeStep: 0.1,
@@ -116,7 +115,8 @@ onMounted(() => {
 
         <!-- Volume Control -->
         <div class="flex items-center mt-4">
-            <i class="ri-volume-up-line text-xl text-zinc-600 dark:text-zinc-400"></i>
+            <i v-if="volume === 0" class="ri-volume-mute-line text-xl text-zinc-600 dark:text-zinc-400"></i>
+            <i v-else class="ri-volume-up-line text-xl text-zinc-600 dark:text-zinc-400"></i>
             <div class="flex-1 mx-3">
                 <input
                     type="range"

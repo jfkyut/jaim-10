@@ -10,10 +10,27 @@ class MusicController extends Controller
 {
     public function index(Request $request)
     {
+        $musicQuery = Music::query();
+
+        $musicQuery->where(function ($subQuery) use ($request) {
+            if ($request->has('keyword')) {
+                $keyword = $request->input('keyword');
+                $subQuery->where('title', 'like', "%{$keyword}%")
+                         ->orWhere('description', 'like', "%{$keyword}%")
+                         ->orWhere('generated_by', 'like', "%{$keyword}%")
+                         ->orWhere('generated_at', 'like', "%{$keyword}%")
+                         ->orWhere('lyrics', 'like', "%{$keyword}%")
+                         ->orWhereHas('creator', function ($userQuery) use ($keyword) {
+                             $userQuery->where('first_name', 'like', "%{$keyword}%")
+                                       ->orWhere('last_name', 'like', "%{$keyword}%");
+                         });
+            }
+        });
+
         return inertia('Explore/Explore', [
-            'musics' => Music::with('creator')
-                                ->latest()
-                                ->paginate(100)
+            'musics' => $musicQuery->with('creator')
+                                    ->latest()
+                                    ->paginate(100)
         ]);
     }
 

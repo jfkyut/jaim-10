@@ -16,6 +16,10 @@ const props = defineProps({
     autoplay: {
         type: Boolean,
         default: false
+    },
+    creator: {
+        type: Object,
+        default: null
     }
 })
 
@@ -72,7 +76,7 @@ onMounted(() => {
             </div>
             <div class="ml-4">
                 <h3 class="font-semibold text-zinc-800 dark:text-zinc-100">{{ title }}</h3>
-                <p class="text-sm text-zinc-500 dark:text-zinc-400">Artist Name</p>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ creator?.first_name }} {{ creator?.first_name }}</p>
             </div>
         </div>
 
@@ -97,9 +101,9 @@ onMounted(() => {
         <!-- Controls -->
         <div class="flex items-center justify-center space-x-6">
             <!-- prev -->
-            <!-- <button class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
+            <button @click="currentTime = currentTime - 5" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
                 <i class="ri-skip-back-fill text-2xl"></i>
-            </button> -->
+            </button>
 
             <!-- play -->
             <button @click="togglePlay" class="text-zinc-800 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white focus:outline-none">
@@ -108,9 +112,9 @@ onMounted(() => {
             </button>
 
             <!-- next -->
-            <!-- <button class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
+            <button @click="currentTime = currentTime + 5" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
                 <i class="ri-skip-forward-fill text-2xl"></i>
-            </button> -->
+            </button>
         </div>
 
         <!-- Volume Control -->

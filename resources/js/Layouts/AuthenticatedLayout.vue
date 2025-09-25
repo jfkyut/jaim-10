@@ -113,7 +113,9 @@ onUnmounted(() => {
                     <i class="ri-menu-4-line text-[1.5rem]"></i>
                 </button>
 
-                <slot name="header" />
+                <h2 class="font-semibold text-zinc-800 dark:text-zinc-200 leading-tight uppercase">
+                    <slot name="header" />
+                </h2>
 
                 <!-- User Dropdown -->
                 <Dropdown>
@@ -145,6 +147,7 @@ onUnmounted(() => {
                             :src="`/storage/${currentSong.file_path}`"
                             :title="currentSong.title"
                             :autoplay="true"
+                            :creator="currentSong.creator"
                         />
                     </div>
                 </div>

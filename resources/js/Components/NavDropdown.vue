@@ -18,12 +18,19 @@ const props = defineProps({
 // Inject sidebarOpen from parent
 // const { sidebarOpen } = inject('auth-layout-context');
 
+const { toggleSidebar } = useAuthLayoutStore();
+
 const { sidebarOpen } = storeToRefs(useAuthLayoutStore())
 
 const isOpen = ref(false);
 
 const toggle = () => {
     isOpen.value = !isOpen.value;
+
+    // If on mobile and opening the dropdown, close the sidebar
+    if (!sidebarOpen.value) {
+        toggleSidebar();
+    }
 };
 
 const buttonClasses = computed(() => {

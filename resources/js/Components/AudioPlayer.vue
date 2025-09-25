@@ -1,9 +1,8 @@
 <script setup>
-import { ref, onMounted, computed, inject, watch, nextTick } from 'vue'
+import { ref, onMounted, useTemplateRef, toRefs, computed } from 'vue'
 import { useAudioStore } from '@/Stores/audio'
 import { storeToRefs } from 'pinia'
-
-const currentGlobalAudio = inject('currentAudio', ref(null))
+import { useMediaControls } from '@vueuse/core';
 
 const props = defineProps({
     src: {
@@ -20,122 +19,116 @@ const props = defineProps({
     }
 })
 
-const audioStore = useAudioStore()
-const { isPlaying: storeIsPlaying } = storeToRefs(audioStore)
+const { src, title, autoplay } = toRefs(props);
 
-const audio = ref(null)
-const currentTime = ref(0)
-const duration = ref(0)
-const volume = ref(1)
+const audio = useTemplateRef('audio');
 
-const formattedTime = computed(() => {
-    return (time) => {
-        const minutes = Math.floor(time / 60)
-        const seconds = Math.floor(time % 60)
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`
-    }
-})
+const { 
+    playing, 
+    currentTime, 
+    duration, 
+    volume,
+    seeking,
+    muted,
+} = useMediaControls(audio, {
+    volumeStep: 0.1,
+    playbackRateStep: 0.1,
+    seekStep: 5,
+    // seekInterval: 200,
+    src: src,
+    loop: false,
+    preload: 'metadata',
+});
 
-const progress = computed(() => {
-    return (currentTime.value / duration.value) * 100
-})
+const formatTime = (time) => {
+    if (!time) return '0:00'
+    const minutes = Math.floor(time / 60)
+    const seconds = Math.floor(time % 60)
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
 
 const togglePlay = () => {
-    if (audio.value.paused) {
-        if (currentGlobalAudio.value && currentGlobalAudio.value !== audio.value) {
-            currentGlobalAudio.value.pause()
-            currentGlobalAudio.value.currentTime = 0
-        }
-        currentGlobalAudio.value = audio.value
-        audio.value.play().catch(error => {
-            console.error('Error playing audio:', error)
-            audioStore.setIsPlaying(false)
-        })
-        audioStore.setIsPlaying(true)
-    } else {
-        audio.value.pause()
-        audioStore.setIsPlaying(false)
-    }
+    playing.value = !playing.value;
 }
 
-const updateVolume = (event) => {
-    audio.value.volume = event.target.value
-    volume.value = event.target.value
-}
+
 
 onMounted(() => {
-    audio.value.addEventListener('timeupdate', () => {
-        currentTime.value = audio.value.currentTime
-    })
-
-    audio.value.addEventListener('loadedmetadata', () => {
-        duration.value = audio.value.duration
-        if (props.autoplay) {
-            togglePlay()
-        }
-    })
-
-    audio.value.addEventListener('ended', () => {
-        audioStore.setIsPlaying(false)
-        if (currentGlobalAudio.value === audio.value) {
-            currentGlobalAudio.value = null
-        }
-    })
-
-    audio.value.addEventListener('pause', () => {
-        audioStore.setIsPlaying(false)
-    })
-
-    audio.value.addEventListener('play', () => {
-        audioStore.setIsPlaying(true)
-    })
+    volume.value = 0.5;
+    currentTime.value = 60;
 })
 
-watch(currentGlobalAudio, (newAudio) => {
-    if (newAudio !== audio.value && storeIsPlaying.value) {
-        audioStore.setIsPlaying(false)
-    }
-}, { flush: 'post' })
+
 </script>
 
 <template>
-    <div class="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow">
-        <audio ref="audio" :src="src" preload="metadata" class="hidden" />
-        
-        <div class="flex flex-col space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200">{{ title }}</h3>
-                <div class="flex items-center space-x-2">
-                    <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.01"
-                        :value="volume"
-                        @input="updateVolume"
-                        class="w-20 accent-green-600"
-                    />
-                    <i class="ri-volume-up-line text-zinc-600 dark:text-zinc-400"></i>
+    <div class="audio-player bg-white dark:bg-zinc-800 shadow-lg rounded-lg p-4">
+        <!-- Track Info -->
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-zinc-200 dark:bg-zinc-700 rounded-lg flex-shrink-0">
+                <!-- Album Art Placeholder -->
+                <div class="w-full h-full flex items-center justify-center">
+                    <i class="ri-music-2-line text-xl text-zinc-400 dark:text-zinc-500"></i>
                 </div>
             </div>
-
-            <div class="relative w-full h-1 bg-red-200 dark:bg-zinc-700 rounded cursor-pointer">
-                <div class="absolute h-full bg-green-600 rounded" :style="{ width: `${progress}%` }"></div>
-            </div>
-
-            <div class="flex justify-between items-center">
-                <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ formattedTime(currentTime) }}</span>
-                
-                <button
-                    @click="togglePlay"
-                    class="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700"
-                >
-                    <i v-if="!storeIsPlaying" class="ri-play-circle-fill text-4xl text-green-600"></i>
-                    <i v-else class="ri-pause-circle-fill text-4xl text-green-600"></i>
-                </button>
-                
-                <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ formattedTime(duration) }}</span>
+            <div class="ml-4">
+                <h3 class="font-semibold text-zinc-800 dark:text-zinc-100">{{ title }}</h3>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400">Artist Name</p>
             </div>
         </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-4">
+            <div class="relative">
+                <input
+                    type="range"
+                    min="0"
+                    :max="duration"
+                    step="0.01"
+                    v-model="currentTime"
+                    class="w-full h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full cursor-pointer accent-green-600"
+                />
+            </div>
+            <div class="flex justify-between text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                <span>{{ formatTime(currentTime) }}</span>
+                <span>{{ formatTime(duration) }}</span>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center justify-center space-x-6">
+            <!-- prev -->
+            <!-- <button class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
+                <i class="ri-skip-back-fill text-2xl"></i>
+            </button> -->
+
+            <!-- play -->
+            <button @click="togglePlay" class="text-zinc-800 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white focus:outline-none">
+                <i v-if="playing" class="ri-pause-fill text-[2rem] rounded-full"></i>
+                <i v-else class="ri-play-fill text-[2rem] rounded-full"></i>
+            </button>
+
+            <!-- next -->
+            <!-- <button class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
+                <i class="ri-skip-forward-fill text-2xl"></i>
+            </button> -->
+        </div>
+
+        <!-- Volume Control -->
+        <div class="flex items-center mt-4">
+            <i class="ri-volume-up-line text-xl text-zinc-600 dark:text-zinc-400"></i>
+            <div class="flex-1 mx-3">
+                <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    v-model="volume"
+                    class="w-20 accent-green-600"
+                />
+            </div>
+        </div>
+
+        <audio ref="audio" :autoplay="autoplay" class="sr-only"></audio>
     </div>
 </template>

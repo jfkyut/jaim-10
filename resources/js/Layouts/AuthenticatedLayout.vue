@@ -139,7 +139,7 @@ onUnmounted(() => {
                 <slot />
 
                 <!-- Audio Player -->
-                <div v-if="currentSong" class="fixed bottom-0 left-0 right-0 z-40 px-2 md:px-4 pb-2 md:pb-4">
+                <div v-if="currentSong" class="absolute bottom-0 left-0 right-0 z-40 px-2 md:px-4 pb-2 md:pb-4">
                     <div class="max-w-4xl mx-auto">
                         <AudioPlayer 
                             :src="`/storage/${currentSong.file_path}`"

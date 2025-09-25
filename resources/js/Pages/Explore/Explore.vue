@@ -3,12 +3,15 @@ import Container from '@/Components/containers/Container.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head } from '@inertiajs/vue3'
 import { useAudioStore } from '@/Stores/audio'
+import { storeToRefs } from 'pinia'
 
 const props = defineProps({ 
     musics: Object 
 })
 
 const audioStore = useAudioStore()
+
+const { currentSong } = storeToRefs(useAudioStore());
 
 const playSong = (music) => {
     audioStore.playSong(music)
@@ -40,7 +43,8 @@ const playSong = (music) => {
                                 class="mt-2 px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition"
                                 @click="playSong(music)"
                             >
-                                Play
+                                <span v-if="currentSong && currentSong.id === music.id"> Playing</span>
+                                <span v-else> Play</span>
                             </button>
                         </div>
                     </div>

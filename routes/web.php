@@ -42,9 +42,12 @@ Route::middleware('auth')->group(function () {
     Route::post('music/upload', [MusicController::class, 'store'])->name('music.store');
 
     Route::get('creation/my-albums', [App\Http\Controllers\CreationController::class, 'myAlbums'])->name('creation.myAlbums');
+    
     Route::post('album/store', [AlbumController::class, 'store'])->name('album.store');
     Route::put('album/{album}/update', [AlbumController::class, 'update'])->name('album.update');
     Route::delete('album/{album}/delete', [AlbumController::class, 'destroy'])->name('album.destroy');
+    Route::get('albums', [AlbumController::class, 'index'])->name('album.index');
+    Route::get('album/{album}', [AlbumController::class, 'show'])->name('album.show');
 });
 
 require __DIR__.'/auth.php';

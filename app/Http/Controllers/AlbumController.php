@@ -7,6 +7,26 @@ use Illuminate\Http\Request;
 
 class AlbumController extends Controller
 {
+    public function index(Request $request)
+    {
+        $albumQuery = Album::query();
+
+        $albumQuery->where(function ($albumSubQuery) use ($request) {
+
+            if ($request->has('keyword')) {
+                $keyword = $request->input('keyword');
+                $albumSubQuery->where('name', 'like', "%{$keyword}%")
+                              ->orWhere('description', 'like', "%{$keyword}%");
+            }
+        });
+
+        return inertia('Album/Albums', [
+            'albums' => $albumQuery->with('musics')
+                                    ->latest()
+                                    ->paginate(100),
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -28,6 +48,13 @@ class AlbumController extends Controller
         ]);
 
         return back();
+    }
+
+    public function show(Album $album)
+    {
+        return inertia('Album/AlbumDetail', [
+            'album' => $album->load('musics', 'creator'),
+        ]);
     }
 
     public function update(Request $request, Album $album)

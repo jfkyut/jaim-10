@@ -3,20 +3,27 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { Button } from 'primevue';
-import EditAlbumModal from './my-albums-partials/EditAlbumModal.vue';
 import UploadModal from '@/Pages/Creation/my-albums-partials/edit-album-partials/UploadModal.vue';
-import DeleteAlbumModal from './my-albums-partials/DeleteAlbumModal.vue';
 import Container from '@/Components/containers/Container.vue';
 import SearchForm from '@/Components/forms/SearchForm.vue';
 import { storeToRefs } from 'pinia';
 import { useMyAlbumStore } from '@/Stores/myAlbums';
 import Paginator from '@/Components/Paginator.vue';
+import { useAudioStore } from '@/Stores/audio';
 
 defineProps({ 
     albums: Array 
 });
 
 const { params } = storeToRefs(useMyAlbumStore());
+
+const audioStore = useAudioStore();
+
+const handlePlayAlbum = (album) => {
+    if (album.musics && album.musics.length > 0) {
+        audioStore.setQueue(album.musics, 0); // Set queue starting from first song
+    }
+};
 
 </script>
 
@@ -62,9 +69,12 @@ const { params } = storeToRefs(useMyAlbumStore());
                         <p class="text-sm text-neutral-600 dark:text-neutral-400">Number of Songs: {{ album.musics.length }}</p>
                     
                         <div class="mt-2 flex gap-2 items-center">
-                            
-                            <EditAlbumModal :album="album" />
-                            <DeleteAlbumModal :album="album" />
+                            <Button @click="handlePlayAlbum(album)">
+                                <i class="ri-play-fill"></i>
+                                <span>Play</span>
+                            </Button>
+                            <!-- <EditAlbumModal :album="album" />
+                            <DeleteAlbumModal :album="album" /> -->
                         </div>
                     </div>
                 </div>

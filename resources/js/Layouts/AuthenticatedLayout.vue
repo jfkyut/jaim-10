@@ -75,6 +75,12 @@ onUnmounted(() => {
                     <span v-if="sidebarOpen" class="ml-2">Explore Music</span>
                 </NavLink>
 
+                <!-- explore albums -->
+                <NavLink :href="route('album.index')" :active="route().current('album.*')" class="mb-2 flex items-center">
+                    <i class="ri-album-line"></i>
+                    <span v-if="sidebarOpen" class="ml-2">Explore Albums</span>
+                </NavLink>
+
                 <!-- library -->
                 <NavDropdown
                     v-if="$page.props.auth.user" 

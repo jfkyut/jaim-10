@@ -21,7 +21,10 @@ class AlbumController extends Controller
         });
 
         return inertia('Album/Albums', [
-            'albums' => $albumQuery->with('musics')
+            'albums' => $albumQuery->with('musics', function ($musicQuery) {
+                                        $musicQuery->with('creator')
+                                                    ->with('album');
+                                    })
                                     ->latest()
                                     ->paginate(100),
         ]);
@@ -53,7 +56,11 @@ class AlbumController extends Controller
     public function show(Album $album)
     {
         return inertia('Album/AlbumDetail', [
-            'album' => $album->load('musics', 'creator'),
+            'album' => $album->load(['musics' => function ($musicQuery) {
+                                $musicQuery->with('creator')
+                                            ->with('album');
+                            }])
+                            ->load('creator'),
         ]);
     }
 

@@ -64,7 +64,7 @@ onUnmounted(() => {
             <!-- Navigation Links -->
             <nav class="mt-8 px-4">
 
-                <NavLink v-if="$page.props.auth.user.role.name === 'admin'" :href="route('dashboard')" :active="route().current('dashboard')" class="mb-2 flex items-center">
+                <NavLink v-if="$page.props.auth.user && $page.props.auth.user.role.name === 'admin'" :href="route('dashboard')" :active="route().current('dashboard')" class="mb-2 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
@@ -190,9 +190,10 @@ onUnmounted(() => {
                             :title="currentSong.title"
                             :autoplay="true"
                             :creator="currentSong.creator"
-                            :album_cover="currentSong.album ? currentSong.album.photo_path : null"
+                            :album_cover="currentSong?.album?.photo_path"
                         />
                     </div>
+                    {{ console.log(currentSong) }}
                 </div>
             </main>
         </div>

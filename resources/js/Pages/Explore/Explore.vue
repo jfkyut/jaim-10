@@ -36,7 +36,7 @@ const { params } = storeToRefs(useMusicParamStore())
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 p-2">
                     <MusicCard :musics="musics.data" />
                 </div>
-                <div >
+                <div v-if="musics.links.length > 3" class="mt-4">
                     <Paginator :links="musics.links" :params="params" />
                 </div>
             </template>

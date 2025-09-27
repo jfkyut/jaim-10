@@ -20,6 +20,10 @@ const props = defineProps({
     creator: {
         type: Object,
         default: null
+    },
+    album_cover: {
+        type: String,
+        default: null
     }
 })
 
@@ -70,9 +74,10 @@ onMounted(() => {
         <div class="flex items-center mb-4">
             <div class="w-12 h-12 bg-zinc-200 dark:bg-zinc-700 rounded-lg flex-shrink-0">
                 <!-- Album Art Placeholder -->
-                <div class="w-full h-full flex items-center justify-center">
+                <div v-if="!album_cover" class="w-full h-full flex items-center justify-center">
                     <i class="ri-music-2-line text-xl text-zinc-400 dark:text-zinc-500"></i>
                 </div>
+                <img v-else :src="`/storage/${album_cover}`" alt="Album Cover" class="w-full h-full object-cover rounded-lg" />
             </div>
             <div class="ml-4">
                 <h3 class="font-semibold text-zinc-800 dark:text-zinc-100">{{ title }}</h3>

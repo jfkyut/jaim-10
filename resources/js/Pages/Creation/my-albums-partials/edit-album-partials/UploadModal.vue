@@ -10,6 +10,12 @@ import { Button, InputText, Textarea } from 'primevue';
 import { useForm } from '@inertiajs/vue3';
 import { useToast } from 'vue-toastification';
 
+const props = defineProps({
+    album: Object
+})
+
+const { album } = toRefs(props);
+
 const { sidebarOpen } = storeToRefs(useAuthLayoutStore());
 
 const toast = useToast()
@@ -24,7 +30,8 @@ const form = ref(useForm({
     generated_by: '',
     generated_at: '',
     description: '',
-    lyrics: ''
+    lyrics: '',
+    album_id: album.value ? album.value.id : null
 }));
 
 const onChangeFile = (event) => {
@@ -49,10 +56,10 @@ const submit = () => {
 </script>
 
 <template>
-    <NavButton @click="isShowModal = true">
+    <Button @click="isShowModal = true">
         <i class="ri-upload-line"></i>
-        <span v-if="sidebarOpen" class="ms-2">Upload</span>
-    </NavButton>
+        <span v-if="sidebarOpen" class="ms-2">Upload Music</span>
+    </Button>
 
     <Modal
         :show="isShowModal"
@@ -124,10 +131,11 @@ const submit = () => {
                             name="description"
                             class="block w-full" 
                             rows="3"
+                            auto-resize
                             placeholder="Describe your track..."
                         />
                     </div>
-                    <div class="space y-2">
+                    <div class="space-y-2">
                         <label for="">Lyrics</label>
                         <Textarea 
                             v-model="form.lyrics"
@@ -135,6 +143,7 @@ const submit = () => {
                             class="block w-full" 
                             rows="3"
                             placeholder="Lyrics of the track..."
+                            auto-resize
                         />
                     </div>
                     <button ref="submitButtonRef" class="sr-only"></button>

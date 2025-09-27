@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(UserRole::class);
     }
+
+    public function albums()
+    {
+        return $this->hasMany(Album::class, 'user_id');
+    }
 }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->longText('lyrics')->nullable();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('file_path')->nullable();
-            // $table->foreignId('albom_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('album_id')->nullable()->constrained('albums')->cascadeOnDelete();
             $table->timestamps();
         });
     }

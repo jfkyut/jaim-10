@@ -28,6 +28,7 @@ class StoreMusicRequest extends FormRequest
             'description' => 'nullable|string',
             'lyrics' => 'nullable|string',
             'music' => 'required|file|mimes:mp3,wav,ogg|max:30720', // Max 30MB
+            'album_id' => 'nullable|exists:albums,id',
         ];
     }
 }

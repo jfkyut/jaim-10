@@ -50,7 +50,7 @@ defineProps({
                     <a href="/register" class="rounded-md bg-green-600 px-8 py-3 text-lg font-semibold text-white shadow-sm hover:bg-green-500">
                         Start Creating
                     </a>
-                    <a href="/explore" class="text-lg font-semibold leading-6 text-white">
+                    <a href="/music/explore" class="text-lg font-semibold leading-6 text-white">
                         Explore Music <span aria-hidden="true">→</span>
                     </a>
                 </div>

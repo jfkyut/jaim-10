@@ -17,11 +17,16 @@ class Music extends Model
         'lyrics',
         'user_id',
         'file_path',
-        // 'album_id'
+        'album_id'
     ];
 
     public function creator()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function album()
+    {
+        return $this->belongsTo(Album::class, 'album_id');
     }
 }

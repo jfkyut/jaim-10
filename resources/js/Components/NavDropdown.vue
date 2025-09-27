@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, inject } from 'vue';
+import { ref, computed, inject, onMounted, watch } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { storeToRefs } from 'pinia';
 import { useAuthLayoutStore } from '@/Stores/authlayout';
@@ -15,14 +15,26 @@ const props = defineProps({
     }
 });
 
-// Inject sidebarOpen from parent
-// const { sidebarOpen } = inject('auth-layout-context');
-
 const { toggleSidebar } = useAuthLayoutStore();
+const { sidebarOpen } = storeToRefs(useAuthLayoutStore());
 
-const { sidebarOpen } = storeToRefs(useAuthLayoutStore())
+// Generate a unique key for this dropdown based on title
+const storageKey = `navDropdown_${props.title.toLowerCase().replace(/\s+/g, '_')}`;
 
 const isOpen = ref(false);
+
+// Load the initial state from localStorage
+onMounted(() => {
+    const savedState = sessionStorage.getItem(storageKey);
+    if (savedState !== null) {
+        isOpen.value = JSON.parse(savedState);
+    }
+});
+
+// Watch for changes and save to sessionStorage
+watch(isOpen, (newValue) => {
+    sessionStorage.setItem(storageKey, JSON.stringify(newValue));
+});
 
 const toggle = () => {
     isOpen.value = !isOpen.value;
@@ -69,7 +81,7 @@ const buttonClasses = computed(() => {
             v-show="isOpen && sidebarOpen"
             class="mt-1 space-y-1"
         >
-            <div class="pl-4 border-l border-zinc-200 dark:border-zinc-600 space-y-2">
+            <div class="pl-4 pt-2 border-l border-zinc-200 dark:border-zinc-600 space-y-2">
                 <slot />
             </div>
         </div>

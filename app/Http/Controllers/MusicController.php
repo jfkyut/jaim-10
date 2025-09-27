@@ -29,6 +29,7 @@ class MusicController extends Controller
 
         return inertia('Explore/Explore', [
             'musics' => $musicQuery->with('creator')
+                                    ->with('album')
                                     ->latest()
                                     ->paginate(100)
         ]);
@@ -49,6 +50,7 @@ class MusicController extends Controller
                 'lyrics' => $request->validated("lyrics"),
                 'user_id' => auth()->user()->id, // Assuming user is authenticated
                 'file_path' => $path,
+                'album_id' => $request->validated("album_id"),
             ]);
         } 
 

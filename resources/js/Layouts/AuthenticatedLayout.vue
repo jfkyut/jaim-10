@@ -8,12 +8,14 @@ import { Link } from '@inertiajs/vue3';
 import NavDropdown from '@/Components/NavDropdown.vue';
 import NavButton from '@/Components/NavButton.vue';
 import { Button } from 'primevue';
-import UploadModal from './authlayout-partials/UploadModal.vue';
+import UploadModal from '../Pages/Creation/my-albums-partials/edit-album-partials/UploadModal.vue';
 import { useAuthLayoutStore } from '@/Stores/authlayout';
 import AudioPlayer from '@/Components/AudioPlayer.vue';
 import { useAudioStore } from '@/Stores/audio';
 import { storeToRefs } from 'pinia';
 import { ref, provide, onMounted, onUnmounted } from 'vue';
+import CreateAlbumModal from './authlayout-partials/CreateAlbumModal.vue';
+import { router } from '@inertiajs/vue3';
 
 const { toggleSidebar } = useAuthLayoutStore();
 const { sidebarOpen } = storeToRefs(useAuthLayoutStore());
@@ -61,7 +63,8 @@ onUnmounted(() => {
 
             <!-- Navigation Links -->
             <nav class="mt-8 px-4">
-                <NavLink :href="route('dashboard')" :active="route().current('dashboard')" class="mb-2 flex items-center">
+
+                <NavLink v-if="$page.props.auth.user.role.name === 'admin'" :href="route('dashboard')" :active="route().current('dashboard')" class="mb-2 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
@@ -71,7 +74,13 @@ onUnmounted(() => {
                     <i class="ri-search-line"></i>
                     <span v-if="sidebarOpen" class="ml-2">Explore Music</span>
                 </NavLink>
-                <NavDropdown title="Library" :active="route().current('test.*')">
+
+                <!-- library -->
+                <NavDropdown
+                    v-if="$page.props.auth.user" 
+                    title="Library" 
+                    :active="route().current('test.*')"
+                >
                     <template #icon>
                         <i class="ri-music-2-line"></i>
                     </template>
@@ -97,7 +106,21 @@ onUnmounted(() => {
                         <NavLink href="">test</NavLink>
                     </NavDropdown>
                 </NavDropdown>
-                <UploadModal />
+                <NavDropdown
+                    v-if="$page.props.auth.user"
+                    title="My Creations"
+                    :active="route().current('creation.*')"
+                >
+                    <template #icon>
+                        <i class="ri-folder-2-line"></i>
+                    </template>
+                    <CreateAlbumModal />
+                    <NavLink :href="route('creation.myAlbums')" :active="route().current('creation.myAlbums')">
+                        <i class="ri-album-line"></i>
+                        <span class="ms-2">My Albums</span>
+                    </NavLink>
+                </NavDropdown>
+                
             </nav>
         </div>
 
@@ -118,7 +141,7 @@ onUnmounted(() => {
                 </h2>
 
                 <!-- User Dropdown -->
-                <Dropdown>
+                <Dropdown v-if="$page.props.auth.user">
                     <template #trigger>
                         <Button severity="secondary" type="button" class="truncate max-w-[200px]">
                             {{ $page.props.auth.user.email }}
@@ -134,6 +157,19 @@ onUnmounted(() => {
                         </DropdownLink>
                     </template>
                 </Dropdown>
+                <div v-else>
+                    <Button 
+                        severity="secondary" 
+                        label="Log In" 
+                        @click="router.get(route('login'))"
+                    />
+                    <Button 
+                        severity="primary" 
+                        label="Register" 
+                        class="ms-2"
+                        @click="router.get(route('register'))"
+                    />
+                </div>
             </div>
 
             <!-- Main Content Area -->
@@ -148,6 +184,7 @@ onUnmounted(() => {
                             :title="currentSong.title"
                             :autoplay="true"
                             :creator="currentSong.creator"
+                            :album_cover="currentSong.album ? currentSong.album.photo_path : null"
                         />
                     </div>
                 </div>

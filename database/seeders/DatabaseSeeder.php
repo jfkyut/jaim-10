@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,9 +15,24 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $roles = [
+            'listener',
+            'creator',
+            'admin'
+        ];
+
+        foreach ($roles as $role) {
+            \App\Models\UserRole::create([
+                'name' => $role
+            ]);
+        }
+
+        \App\Models\User::create([
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'email' => 'test@test.test',
+            'role_id' => 3, // admin
+            'password' => Hash::make('testtest')
+        ]);
     }
 }

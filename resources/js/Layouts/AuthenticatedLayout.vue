@@ -16,6 +16,7 @@ import { storeToRefs } from 'pinia';
 import { ref, provide, onMounted, onUnmounted } from 'vue';
 import CreateAlbumModal from './authlayout-partials/CreateAlbumModal.vue';
 import { router } from '@inertiajs/vue3';
+import CreatePlaylistModal from './authlayout-partials/CreatePlaylistModal.vue';
 
 const { toggleSidebar } = useAuthLayoutStore();
 const { sidebarOpen } = storeToRefs(useAuthLayoutStore());
@@ -102,14 +103,19 @@ onUnmounted(() => {
                         <template #icon>
                             <i class="ri-play-list-line"></i>
                         </template>
-                        <NavButton type="button" class="mb-2 flex items-center">
-                            <i class="ri-add-line"></i>
-                            <span v-if="sidebarOpen" class="ml-2">Create Playlist</span>
-                        </NavButton>
-                        <NavLink href="">playlist 1</NavLink>
-                        <NavLink href="">test</NavLink>
-                        <NavLink href="">test</NavLink>
-                        <NavLink href="">test</NavLink>
+                        <CreatePlaylistModal />
+                        <div v-if="$page.props.auth.user.playlists.length === 0" class="text-center text-neutral-600 dark:text-neutral-400 p-2">
+                            No playlists found.
+                        </div>
+                        <NavLink 
+                            v-for="playlist in $page.props.auth.user.playlists" 
+                            :key="playlist.id"
+                            :href="route('playlist.show', playlist.id)"
+                            :active="route().current('playlist.show') && route().params.id == playlist.id"
+                        >
+                            <i class="ri-playlist-fill"></i>
+                            <span class="ms-2">{{ playlist.name }}</span>
+                        </NavLink>
                     </NavDropdown>
                 </NavDropdown>
                 <NavDropdown

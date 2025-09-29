@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\MusicController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PlaylistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('music/upload', [MusicController::class, 'store'])->name('music.store');
 
+    // album routes
     Route::get('creation/my-albums', [App\Http\Controllers\CreationController::class, 'myAlbums'])->name('creation.myAlbums');
     
     Route::post('album/store', [AlbumController::class, 'store'])->name('album.store');
@@ -48,6 +50,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('album/{album}/delete', [AlbumController::class, 'destroy'])->name('album.destroy');
     Route::get('albums', [AlbumController::class, 'index'])->name('album.index');
     Route::get('album/{album}', [AlbumController::class, 'show'])->name('album.show');
+
+    // playlist routes
+    Route::post('playlist/store', [PlaylistController::class, 'store'])->name('playlist.store');
+    Route::get('playlist/{playlist}', [PlaylistController::class, 'show'])->name('playlist.show');
+    Route::post('/playlists/{playlist}/add-music', [PlaylistController::class, 'addMusic'])->name('playlist.add-music');
 });
 
 require __DIR__.'/auth.php';

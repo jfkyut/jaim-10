@@ -94,10 +94,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="audio-player bg-white dark:bg-zinc-800 shadow-lg rounded-lg p-4">
+    <div class="audio-player bg-white dark:bg-zinc-800 shadow-lg rounded-lg p-4 border dark:border-zinc-700 w-full max-w-2xl mx-auto">
         <!-- Track Info -->
-        <div class="flex justify-between items-center mb-4">
-            <div class="flex items-center mb-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center mb-2">
                 <div class="w-12 h-12 bg-zinc-200 dark:bg-zinc-700 rounded-lg flex-shrink-0">
                     <!-- Album Art Placeholder -->
                     <div v-if="!album_cover" class="w-full h-full flex items-center justify-center">
@@ -129,7 +129,7 @@ onUnmounted(() => {
         </div>
 
         <!-- Progress Bar -->
-        <div class="mb-4">
+        <div class="mb-2">
             <div class="relative">
                 <input
                     type="range"
@@ -174,8 +174,6 @@ onUnmounted(() => {
                 <i class="ri-skip-forward-line text-2xl"></i>
             </button>
         </div>
-
-        
 
         <audio ref="audio" :autoplay="autoplay" class="sr-only"></audio>
     </div>

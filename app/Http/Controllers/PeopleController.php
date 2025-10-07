@@ -12,9 +12,6 @@ class PeopleController extends Controller
         $userQuery = User::query();
 
         $userQuery->where(function ($userSubQuery) use ($request) {
-            $userSubQuery->whereHas('role', function ($role) {
-                $role->where('name', '!=', 'admin');
-            });
 
             $userSubQuery->where('id', '!=', $request->user()->id);
 
@@ -33,6 +30,31 @@ class PeopleController extends Controller
                                 }, 'following'])
                                 ->latest()
                                 ->paginate(100)
+        ]);
+    }
+
+    public function show(User $user)
+    {
+        $user = User::where('id', $user->id)
+                    ->withCount([
+                        'followers', 
+                        'following', 
+                        'tracks'
+                    ])
+                    ->with([
+                        'tracks' => function($query) {
+                            $query->latest();
+                        }, 
+                        'playlists', 
+                        'albums', 
+                        'followers' => function($query) {
+                            $query->where('follower_id', auth()->id());
+                        }
+                    ])
+                    ->firstOrFail();
+
+        return inertia('People/Profile', [
+            'profile' => $user
         ]);
     }
 }

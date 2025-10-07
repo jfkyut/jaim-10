@@ -7,6 +7,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\MusicController;
+use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PlaylistController;
 
@@ -60,7 +61,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/creators', [CreatorController::class, 'index'])->name('creator.index');
 
-    Route::get('/discover-people', [App\Http\Controllers\PeopleController::class, 'index'])->name('people.index');
+    Route::get('/discover-people', [PeopleController::class, 'index'])->name('people.index');
+    Route::get('/people/{user}/profile', [PeopleController::class, 'show'])->name('people.show');
 
     Route::post('/follow/{user}', [FollowController::class, 'toggle'])->name('user.follow');
 });

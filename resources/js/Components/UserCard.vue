@@ -2,6 +2,7 @@
 
 import { ref } from 'vue';
 import axios from 'axios';
+import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
     user: {
@@ -43,7 +44,7 @@ const toggleFollow = async () => {
             </div>
 
             <!-- User Info with improved typography -->
-            <div class="text-center space-y-2">
+            <div class="text-center space-y-2 hover:cursor-pointer" @click="router.get(route('people.show', user.id))">
                 <h3 class="text-xl font-bold text-zinc-800 dark:text-zinc-100">
                     {{ user.first_name }} {{ user.last_name }}
                 </h3>

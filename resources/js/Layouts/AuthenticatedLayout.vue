@@ -49,7 +49,7 @@ onUnmounted(() => {
         <!-- Sidebar -->
         <div :class="[
             'transition-all duration-300 ease-in-out bg-white dark:bg-zinc-800 border-r border-zinc-100 dark:border-zinc-700 h-[100vh] z-[100] overflow-y-auto',
-            'fixed md:relative z-30',
+            'absolute md:relative z-30',
             sidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0 md:w-20',
         ]">
             <!-- Logo -->
@@ -106,10 +106,10 @@ onUnmounted(() => {
                         <i class="ri-heart-line"></i>
                         <span class="ml-2">Favorites</span>
                     </NavLink>
-                    <NavLink href="">
+                    <!-- <NavLink href="">
                         <i class="ri-history-line"></i>
                         <span class="ms-2">Recents</span>
-                    </NavLink>
+                    </NavLink> -->
                     <NavDropdown title="Playlist" :active="route().current('test.*')">
                         <template #icon>
                             <i class="ri-play-list-line"></i>
@@ -173,6 +173,7 @@ onUnmounted(() => {
                     </template>
                     <template #content>
                         <DropdownLink :href="route('profile.edit')">Profile</DropdownLink>
+                        
                         <DropdownLink
                             href="#"
                             @click.prevent="$inertia.post(route('logout'))"
@@ -197,7 +198,7 @@ onUnmounted(() => {
             </div>
 
             <!-- Main Content Area -->
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-zinc-100 dark:bg-zinc-900 p-4 md:p-6 relative">
+            <main class="flex-1 overflow-x-hidden max-h-[90vh] overflow-y-auto bg-zinc-100 dark:bg-zinc-900 p-4 md:p-6 relative">
                 <slot />
 
                 <!-- Audio Player -->

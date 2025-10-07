@@ -105,7 +105,7 @@ defineProps({
 
             <!-- Footer -->
             <div class="mt-32 pb-16 text-center text-gray-400">
-                <p>© 2025 AITunes. All rights reserved.</p>
+                <p>© 2025 JAIM. All rights reserved.</p>
             </div>
         </div>
     </div>

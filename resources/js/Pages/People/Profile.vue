@@ -1,9 +1,11 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
-import axios from 'axios';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { useLocalStorage } from '@vueuse/core';
+import { Head } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import axios from 'axios';
+import { router } from '@inertiajs/vue3';
+import { useAudioStore } from '@/Stores/audio';
+import AudioPlayer from '@/Components/AudioPlayer.vue';
 
 const props = defineProps({
     profile: {
@@ -12,25 +14,8 @@ const props = defineProps({
     }
 });
 
-// Persistent state using localStorage
-const storageKey = computed(() => `user_${props.profile.id}_stats`);
-const persistedStats = useLocalStorage(storageKey.value, {
-    isFollowing: props.profile.is_following,
-    followersCount: props.profile.followers_count,
-    followingCount: props.profile.following_count,
-    tracksCount: props.profile.tracks_count
-});
-
-const isFollowing = computed({
-    get: () => persistedStats.value.isFollowing,
-    set: (val) => persistedStats.value.isFollowing = val
-});
-
-const followersCount = computed({
-    get: () => persistedStats.value.followersCount,
-    set: (val) => persistedStats.value.followersCount = val
-});
-
+const isFollowing = ref(props.profile.is_following ?? false);
+const followersCount = ref(props.profile.followers_count || 0);
 const isLoading = ref(false);
 
 const toggleFollow = async () => {
@@ -47,138 +32,168 @@ const toggleFollow = async () => {
         isLoading.value = false;
     }
 };
+
+const audioStore = useAudioStore();
+
+// Function to play a track and set queue
+const playTrack = (track, index) => {
+    // Set the queue with all tracks and start from the selected track
+    audioStore.setQueue(props.profile.tracks, index);
+    audioStore.setIsPlaying(true);
+};
+
+// Function to check if a track is currently playing
+const isTrackPlaying = (track) => {
+    return audioStore.currentSong?.id === track.id && audioStore.isPlaying;
+};
 </script>
 
 <template>
-    <Head :title="`${profile.first_name} ${profile.last_name}'s Profile`" />
-
+    <Head :title="`${profile.first_name}'s Profile`" />
     <AuthenticatedLayout>
-        <div class="min-h-screen bg-gradient-to-b from-zinc-100 to-white dark:from-zinc-900 dark:to-zinc-800">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <!-- Profile Header -->
-            <div class="relative">
-                <!-- Cover Image -->
-                <div class="h-48 w-full bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-400">
-                    <div class="absolute inset-0 bg-black/20"></div>
+            <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 sm:p-8">
+                    <div class="flex flex-col sm:flex-row items-center gap-6">
+                        <!-- Avatar -->
+                        <div class="w-32 h-32 rounded-full overflow-hidden ring-4 ring-white dark:ring-zinc-700">
+                            <img 
+                                :src="$page.props.auth.user_placeholder" 
+                                :alt="`${profile.first_name}'s avatar`"
+                                class="w-full h-full object-cover"
+                            >
+                        </div>
+                        
+                        <div class="flex-1 text-center sm:text-left">
+                            <h1 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                                {{ profile.first_name }} {{ profile.last_name }}
+                            </h1>
+                            <p class="text-zinc-500 dark:text-zinc-400 mt-1">{{ profile.email }}</p>
+                            
+                            <!-- Stats -->
+                            <div class="flex justify-center sm:justify-start gap-6 mt-4">
+                                <div class="text-center">
+                                    <span class="block text-xl font-bold text-zinc-900 dark:text-zinc-100">{{ followersCount }}</span>
+                                    <span class="text-sm text-zinc-500 dark:text-zinc-400">Followers</span>
+                                </div>
+                                <div class="text-center">
+                                    <span class="block text-xl font-bold text-zinc-900 dark:text-zinc-100">{{ profile.following_count }}</span>
+                                    <span class="text-sm text-zinc-500 dark:text-zinc-400">Following</span>
+                                </div>
+                                <div class="text-center">
+                                    <span class="block text-xl font-bold text-zinc-900 dark:text-zinc-100">{{ profile.tracks_count }}</span>
+                                    <span class="text-sm text-zinc-500 dark:text-zinc-400">Tracks</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Follow Button -->
+                        <div class="mt-4 sm:mt-0">
+                            <button 
+                                @click="toggleFollow"
+                                :disabled="isLoading"
+                                :class="[
+                                    'px-6 py-2 rounded-full font-medium text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-zinc-800',
+                                    isFollowing 
+                                        ? 'bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-800 dark:text-zinc-100' 
+                                        : 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                                ]"
+                            >
+                                {{ isLoading ? 'Loading...' : (isFollowing ? 'Following' : 'Follow') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Sections -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <!-- Tracks -->
+                <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">Tracks</h2>
+                    <div class="space-y-4 max-h-[400px] overflow-y-auto">
+                        <div 
+                            v-for="(track, index) in profile.tracks" 
+                            :key="track.id" 
+                            class="flex items-center justify-between p-3 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors"
+                        >
+                            <div class="flex items-center flex-1">
+                                <!-- Play Button -->
+                                <button 
+                                    @click="playTrack(track, index)"
+                                    class="mr-3 w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-600"
+                                >
+                                    <i 
+                                        :class="[
+                                            isTrackPlaying(track) ? 'ri-pause-fill' : 'ri-play-fill',
+                                            'text-xl text-zinc-700 dark:text-zinc-300'
+                                        ]"
+                                    ></i>
+                                </button>
+                                
+                                <div>
+                                    <h3 class="font-medium text-zinc-900 dark:text-zinc-100">{{ track.title }}</h3>
+                                    <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ track.generated_at }}</p>
+                                </div>
+                            </div>
+                        </div>
+                     
+                    </div>
                 </div>
 
-                <!-- Profile Info Card -->
-                <div class="max-w-5xl mx-auto px-4">
-                    <div class="relative -mt-24">
-                        <div class="bg-white dark:bg-zinc-800 rounded-2xl shadow-lg p-6">
-                            <div class="flex flex-col md:flex-row gap-6">
-                                <!-- Avatar -->
-                                <div class="flex-shrink-0">
+                <!-- Albums -->
+                <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">Albums</h2>
+                    
+                    <div v-if="profile.albums?.length" class="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[400px] overflow-y-auto">
+                        <div 
+                            v-for="album in profile.albums" 
+                            :key="album.id" 
+                            class="group relative aspect-square bg-zinc-50 dark:bg-zinc-700/50 rounded-xl overflow-hidden hover:shadow-md transition-all duration-200 hover:cursor-pointer"
+                            @click="router.get(route('album.index', { id: album.id }))"
+                        >
+                            <!-- Album Cover -->
+                            <div class="w-full h-full">
+                                <template v-if="album.photo_path">
                                     <img 
-                                        :src="$page.props.auth.user_placeholder" 
-                                        :alt="`${profile.first_name}'s profile`"
-                                        class="w-32 h-32 rounded-xl object-cover ring-2 ring-white dark:ring-zinc-700 shadow"
+                                        :src="`/storage/${album.photo_path}`"
+                                        :alt="album.name"
+                                        class="w-full h-full object-cover"
                                     >
+                                </template>
+                                <div v-else class="w-full h-full flex flex-col items-center justify-center bg-zinc-200 dark:bg-zinc-700">
+                                    <i class="ri-album-line text-4xl text-zinc-400 dark:text-zinc-500"></i>
                                 </div>
+                            </div>
 
-                                <!-- User Info -->
-                                <div class="flex-1">
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">
-                                                {{ profile.first_name }} {{ profile.last_name }}
-                                            </h1>
-                                            <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                                                {{ profile.email }}
-                                            </p>
-                                        </div>
-                                        <button 
-                                            @click="toggleFollow"
-                                            :disabled="isLoading"
-                                            class="px-6 py-2 rounded-lg font-medium text-sm transition-all duration-200 
-                                                focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-zinc-800
-                                                disabled:opacity-50"
-                                            :class="[
-                                                isFollowing 
-                                                    ? 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800 dark:bg-zinc-700 dark:hover:bg-zinc-600 dark:text-white' 
-                                                    : 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white'
-                                            ]"
-                                        >
-                                            {{ isLoading ? 'Loading...' : (isFollowing ? 'Following' : 'Follow') }}
-                                        </button>
-                                    </div>
-
-                                    <!-- Stats Grid -->
-                                    <div class="mt-6 grid grid-cols-3 gap-3">
-                                        <div class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-xl text-center">
-                                            <span class="block text-2xl font-bold text-emerald-500">{{ followersCount }}</span>
-                                            <span class="text-xs font-medium text-zinc-600 dark:text-zinc-400">Followers</span>
-                                        </div>
-                                        <div class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-xl text-center">
-                                            <span class="block text-2xl font-bold text-emerald-500">{{ profile.following_count }}</span>
-                                            <span class="text-xs font-medium text-zinc-600 dark:text-zinc-400">Following</span>
-                                        </div>
-                                        <div class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-xl text-center">
-                                            <span class="block text-2xl font-bold text-emerald-500">{{ profile.tracks_count }}</span>
-                                            <span class="text-xs font-medium text-zinc-600 dark:text-zinc-400">Tracks</span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <!-- Album Info Overlay - Always visible -->
+                            <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 via-black/40 to-transparent">
+                                <h3 class="font-medium text-white text-sm truncate">{{ album.name }}</h3>
+                                <p class="text-xs text-zinc-200 truncate">
+                                    {{ album.musics_count || 0 }} {{ album.musics_count === 1 ? 'track' : 'tracks' }}
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Content Sections -->
-                    <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Tracks Section -->
-                        <div class="lg:col-span-2 space-y-4">
-                            <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-sm p-4">
-                                <h2 class="text-xl font-semibold text-zinc-900 dark:text-white mb-4">Latest Tracks</h2>
-                                <div class="space-y-3">
-                                    <div v-if="profile?.tracks?.length === 0" 
-                                        class="text-center py-8">
-                                        <p class="text-zinc-500 dark:text-zinc-400">No tracks published yet</p>
-                                    </div>
-                                    <div v-for="track in profile.tracks" :key="track.id" 
-                                        class="group flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors">
-                                        <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg shadow-sm"></div>
-                                        <div class="flex-1 min-w-0">
-                                            <h3 class="font-medium text-sm text-zinc-900 dark:text-white truncate">{{ track.title }}</h3>
-                                            <p class="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-1">{{ track.description }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sidebar -->
-                        <div class="space-y-6">
-                            <!-- Albums -->
-                            <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-sm p-4">
-                                <h2 class="text-xl font-semibold text-zinc-900 dark:text-white mb-4">Albums</h2>
-                                <div class="space-y-2">
-                                    <div v-if="profile?.albums?.length === 0" 
-                                        class="text-center py-6">
-                                        <p class="text-zinc-500 dark:text-zinc-400">No albums created yet</p>
-                                    </div>
-                                    <div v-for="album in profile.albums" :key="album.id"
-                                        class="p-3 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors">
-                                        <h3 class="font-medium text-sm text-zinc-900 dark:text-white">{{ album.name }}</h3>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Playlists -->
-                            <!-- <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-sm p-4">
-                                <h2 class="text-xl font-semibold text-zinc-900 dark:text-white mb-4">Playlists</h2>
-                                <div class="space-y-2">
-                                    <div v-if="profile?.playlists?.length === 0" 
-                                        class="text-center py-6">
-                                        <p class="text-zinc-500 dark:text-zinc-400">No playlists created yet</p>
-                                    </div>
-                                    <div v-for="playlist in profile.playlists" :key="playlist.id"
-                                        class="p-3 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors">
-                                        <h3 class="font-medium text-sm text-zinc-900 dark:text-white">{{ playlist.name }}</h3>
-                                    </div>
-                                </div>
-                            </div> -->
-                        </div>
+                    <!-- Empty State -->
+                    <div v-else class="text-center py-12">
+                        <i class="ri-album-line text-4xl text-zinc-400 dark:text-zinc-500"></i>
+                        <p class="mt-2 text-zinc-500 dark:text-zinc-400">No albums yet</p>
                     </div>
                 </div>
+
+                <!-- Playlists -->
+                <!-- <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">Playlists</h2>
+                    <div class="space-y-4">
+                        <div v-for="playlist in profile.playlists" :key="playlist.id"
+                             class="p-3 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors">
+                            <h3 class="font-medium text-zinc-900 dark:text-zinc-100">{{ playlist.name }}</h3>
+                        </div>
+                    </div>
+                </div> -->
             </div>
         </div>
     </AuthenticatedLayout>

@@ -25,6 +25,10 @@ class MusicController extends Controller
                                        ->orWhere('last_name', 'like', "%{$keyword}%");
                          });
             }
+
+            if ($request->filled('id')) {
+                $subQuery->where('id', $request->input('id'));
+            }
         });
 
         return inertia('Explore/Explore', [

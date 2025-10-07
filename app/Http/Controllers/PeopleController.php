@@ -46,7 +46,10 @@ class PeopleController extends Controller
                             $query->latest();
                         }, 
                         'playlists', 
-                        'albums', 
+                        'albums' => function ($query) {
+                            $query->withCount('musics')
+                                    ->latest();
+                        }, 
                         'followers' => function($query) {
                             $query->where('follower_id', auth()->id());
                         }

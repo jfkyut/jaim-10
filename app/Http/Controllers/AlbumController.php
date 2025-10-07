@@ -18,6 +18,10 @@ class AlbumController extends Controller
                 $albumSubQuery->where('name', 'like', "%{$keyword}%")
                               ->orWhere('description', 'like', "%{$keyword}%");
             }
+
+            if ($request->filled('id')) {
+                $albumSubQuery->where('id', $request->input('id'));
+            }
         });
 
         return inertia('Album/Albums', [

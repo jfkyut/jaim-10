@@ -21,18 +21,40 @@ class DatabaseSeeder extends Seeder
             'admin'
         ];
 
+        $users = [
+            [
+                'first_name' => 'Test',
+                'last_name' => 'User',
+                'email' => 'test@test.test',
+                'role_id' => 3, // admin
+                'password' => Hash::make('testtest')
+            ],
+            [
+                'first_name' => 'Jane',
+                'last_name' => 'Doe',
+                'email' => 'janedoe@email.com',
+                'role_id' => 2, // creator
+                'password' => Hash::make('testtest')
+            ],
+            [
+                'first_name' => 'John',
+                'last_name' => 'Smith',
+                'email' => 'johnsmith@email.com',
+                'role_id' => 1, // listener
+                'password' => Hash::make('testtest')
+            ]
+        ];
+
+        
+
         foreach ($roles as $role) {
             \App\Models\UserRole::create([
                 'name' => $role
             ]);
         }
 
-        \App\Models\User::create([
-            'first_name' => 'Test',
-            'last_name' => 'User',
-            'email' => 'test@test.test',
-            'role_id' => 3, // admin
-            'password' => Hash::make('testtest')
-        ]);
+        foreach ($users as $user) {
+            \App\Models\User::create($user);
+        }
     }
 }

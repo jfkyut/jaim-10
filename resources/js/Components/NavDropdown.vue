@@ -81,7 +81,7 @@ const buttonClasses = computed(() => {
             v-show="isOpen && sidebarOpen"
             class="mt-1 space-y-1"
         >
-            <div class="pl-4 pt-2 border-l border-zinc-200 dark:border-zinc-600 space-y-2">
+            <div class="pl-4 pt-2 border-l border-zinc-200 dark:border-zinc-600 space-y-2 overflow-y-auto max-h-[500px]">
                 <slot />
             </div>
         </div>

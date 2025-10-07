@@ -37,6 +37,7 @@ class HandleInertiaRequests extends Middleware
                                                     ->load('role') 
                                                     ->load('playlists')
                                             : null,
+                'user_placeholder' => 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('images/Portrait_Placeholder.png')))
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),

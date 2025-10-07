@@ -28,6 +28,8 @@ class User extends Authenticatable
         'role_id'
     ];
 
+    protected $appends = ['is_following'];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -61,5 +63,35 @@ class User extends Authenticatable
     public function playlists()
     {
         return $this->hasMany(Playlist::class, 'user_id');
+    }
+
+    public function tracks()
+    {
+        return $this->hasMany(Music::class, 'user_id');
+    }
+
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'user_followers', 'following_id', 'follower_id')
+            ->withTimestamps();
+    }
+
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'user_followers', 'follower_id', 'following_id')
+            ->withTimestamps();
+    }
+
+    public function isFollowing(User $user)
+    {
+        return $this->following()->where('following_id', $user->id)->exists();
+    }
+
+    public function getIsFollowingAttribute()
+    {
+        if (!auth()->check()) {
+            return false;
+        }
+        return $this->followers->contains(auth()->user());
     }
 }

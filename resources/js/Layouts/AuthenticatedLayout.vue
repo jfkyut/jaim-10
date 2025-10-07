@@ -53,17 +53,16 @@ onUnmounted(() => {
             sidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0 md:w-20',
         ]">
             <!-- Logo -->
-            <div class="h-16 flex items-center px-4">
-                <Link :href="route('welcome')" class="flex items-center">
-                    <ApplicationLogo class="block h-9 w-auto fill-current text-zinc-800 dark:text-zinc-200" />
-                    <header v-if="sidebarOpen" class="ml-3 font-inter text-base font-medium tracking-wide text-zinc-800 dark:text-zinc-200">
-                        <h1>JAIM</h1>
-                    </header>
-                </Link>
+            <div class="h-16 flex items-center">
+                <!-- <ApplicationLogo class="block h-9 w-auto fill-current text-zinc-800 dark:text-zinc-200" /> -->
+                <header @click="router.get(route('welcome'))" class="mt-4 hover:cursor-pointer ml-3 w-full font-inter text-4xl font-bold text-center tracking-wide text-zinc-800 dark:text-zinc-200">
+                    <h1 v-if="sidebarOpen">JAIM</h1>
+                    <h1 v-else>J</h1>
+                </header>
             </div>
 
             <!-- Navigation Links -->
-            <nav class="mt-8 px-4">
+            <nav class="mt-8 px-4 overflow-y-auto h-[calc(100vh-4rem)]">
 
                 <NavLink v-if="$page.props.auth.user && $page.props.auth.user.role.name === 'admin'" :href="route('dashboard')" :active="route().current('dashboard')" class="mb-2 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -71,6 +70,12 @@ onUnmounted(() => {
                     </svg>
                     <span v-if="sidebarOpen" class="ml-2">Dashboard</span>
                 </NavLink>
+
+                <NavLink v-if="$page.props.auth.user && $page.props.auth.user.role.name === 'admin'" :href="route('creator.index')" :active="route().current('creator.*')" class="mb-2 flex items-center">
+                    <i class="ri-user-6-line"></i>
+                    <span class="ms-2" v-if="sidebarOpen">Creators</span>
+                </NavLink>
+
                 <NavLink :href="route('music.index')" :active="route().current('music.*')" class="mb-2 flex items-center">
                     <i class="ri-search-line"></i>
                     <span v-if="sidebarOpen" class="ml-2">Explore Music</span>
@@ -80,6 +85,12 @@ onUnmounted(() => {
                 <NavLink :href="route('album.index')" :active="route().current('album.*')" class="mb-2 flex items-center">
                     <i class="ri-album-line"></i>
                     <span v-if="sidebarOpen" class="ml-2">Explore Albums</span>
+                </NavLink>
+
+                <!-- creators and listeners -->
+                <NavLink v-if="$page.props.auth.user" :href="route('people.index')" :active="route().current('people.*')" class="mb-2 flex items-center">
+                    <i class="ri-group-line"></i>
+                    <span class="ms-2" v-if="sidebarOpen">Discover People</span>
                 </NavLink>
 
                 <!-- library -->
@@ -117,6 +128,7 @@ onUnmounted(() => {
                             <span class="ms-2">{{ playlist.name }}</span>
                         </NavLink>
                     </NavDropdown>
+                    
                 </NavDropdown>
                 <NavDropdown
                     v-if="$page.props.auth.user"

@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\FollowController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\MusicController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PlaylistController;
@@ -55,6 +57,12 @@ Route::middleware('auth')->group(function () {
     Route::post('playlist/store', [PlaylistController::class, 'store'])->name('playlist.store');
     Route::get('playlist/{playlist}', [PlaylistController::class, 'show'])->name('playlist.show');
     Route::post('/playlists/{playlist}/add-music', [PlaylistController::class, 'addMusic'])->name('playlist.add-music');
+
+    Route::get('/creators', [CreatorController::class, 'index'])->name('creator.index');
+
+    Route::get('/discover-people', [App\Http\Controllers\PeopleController::class, 'index'])->name('people.index');
+
+    Route::post('/follow/{user}', [FollowController::class, 'toggle'])->name('user.follow');
 });
 
 require __DIR__.'/auth.php';

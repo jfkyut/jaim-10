@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Controllers\FollowController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\AlbumController;
-use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\MusicController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PeopleController;
+use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\PlaylistController;
 
 /*
@@ -37,7 +38,8 @@ Route::get('music/explore', [MusicController::class, 'index'])->name('music.inde
 Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
-        ->name('dashboard');
+        ->name('dashboard')
+        ->middleware('admin');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -65,6 +67,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/people/{user}/profile', [PeopleController::class, 'show'])->name('people.show');
 
     Route::post('/follow/{user}', [FollowController::class, 'toggle'])->name('user.follow');
+
+    // for favorites
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorite.index');
 });
 
 require __DIR__.'/auth.php';

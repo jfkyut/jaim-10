@@ -102,7 +102,7 @@ onUnmounted(() => {
                     <template #icon>
                         <i class="ri-music-2-line"></i>
                     </template>
-                    <NavLink href="">
+                    <NavLink :href="route('favorite.index')" :active="route().current('favorite.*')">
                         <i class="ri-heart-line"></i>
                         <span class="ml-2">Favorites</span>
                     </NavLink>

@@ -198,21 +198,18 @@ onUnmounted(() => {
             </div>
 
             <!-- Main Content Area -->
-            <main class="flex-1 overflow-x-hidden max-h-[90vh] overflow-y-auto bg-zinc-100 dark:bg-zinc-900 p-4 md:p-6 relative">
+            <main class="flex-1 overflow-x-hidden max-h-[92vh] overflow-y-auto bg-zinc-100 dark:bg-zinc-900 p-4 md:p-6 relative">
                 <slot />
 
                 <!-- Audio Player -->
-                <div v-if="currentSong" class="absolute bottom-0 left-0 right-0 z-40 px-2 md:px-4 pb-2 md:pb-4">
-                    <div class="max-w-4xl mx-auto">
-                        <AudioPlayer 
-                            :src="`/storage/${currentSong.file_path}`"
-                            :title="currentSong.title"
-                            :autoplay="true"
-                            :creator="currentSong.creator"
-                            :album_cover="currentSong?.album?.photo_path"
-                        />
-                    </div>
-                    {{ console.log(currentSong) }}
+                <div v-if="currentSong" class="fixed bottom-2 left-0 right-0 z-40">
+                    <AudioPlayer 
+                        :src="`/storage/${currentSong.file_path}`"
+                        :title="currentSong.title"
+                        :autoplay="true"
+                        :creator="currentSong.creator"
+                        :album_cover="currentSong?.album?.photo_path"
+                    />
                 </div>
             </main>
         </div>

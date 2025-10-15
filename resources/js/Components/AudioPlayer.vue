@@ -94,7 +94,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="audio-player bg-white dark:bg-zinc-800 shadow-lg rounded-lg p-4 border dark:border-zinc-700 w-full max-w-2xl mx-auto">
+    <div class="bg-white dark:bg-zinc-800 shadow-lg rounded-lg p-4 border dark:border-zinc-700 w-full max-w-2xl mx-auto">
         <!-- Track Info -->
         <div class="flex justify-between items-center">
             <div class="flex items-center mb-2">

@@ -88,7 +88,7 @@ defineProps({
                         </svg>
                     </div>
                     <h2 class="mt-6 text-xl font-semibold text-white">Monetize Your Music</h2>
-                    <p class="mt-4 text-gray-400">Earn from your AI-generated tracks through streams, downloads, and licensing.</p>
+                    <p class="mt-4 text-gray-400">Earn from your AI-generated tracks through streams.</p>
                 </div>
 
                 <!-- Feature 4 -->

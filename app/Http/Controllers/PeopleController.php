@@ -24,10 +24,20 @@ class PeopleController extends Controller
         });
 
         return inertia('People/People', [
-            'people' => $userQuery->withCount(['followers', 'following', 'tracks'])
-                                ->with(['tracks', 'playlists', 'albums', 'followers' => function($query) {
-                                    $query->where('follower_id', auth()->id());
-                                }, 'following'])
+            'people' => $userQuery->withCount([
+                                    'followers', 
+                                    'following', 
+                                    'tracks'
+                                ])
+                                ->with([
+                                    'tracks', 
+                                    'playlists', 
+                                    'albums',
+                                    'following',
+                                    'followers' => function($followers) {
+                                        $followers->where('follower_id', auth()->id());
+                                    }, 
+                                ])
                                 ->latest()
                                 ->paginate(100)
         ]);

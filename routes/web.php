@@ -66,7 +66,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/discover-people', [PeopleController::class, 'index'])->name('people.index');
     Route::get('/people/{user}/profile', [PeopleController::class, 'show'])->name('people.show');
 
-    Route::post('/follow/{user}', [FollowController::class, 'toggle'])->name('user.follow');
+    Route::post('/follow/{user}', [FollowController::class, 'follow'])->name('user.follow');
+    Route::post('/unfollow/{user}', [FollowController::class, 'unfollow'])->name('user.unfollow');
 
     // for favorites
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorite.index');

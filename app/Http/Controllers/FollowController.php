@@ -7,26 +7,17 @@ use Illuminate\Http\Request;
 
 class FollowController extends Controller
 {
-    public function toggle(User $user, Request $request)
+    public function follow(User $user, Request $request)
     {
-        $authenticatedUser = $request->user();
+        $user->followers()->attach($request->user()->id);
 
-        if ($authenticatedUser->id === $user->id) {
-            return response()->json(['message' => 'You cannot follow yourself'], 422);
-        }
+        return $user->loadCount('followers');
+    }
 
-        if ($authenticatedUser->isFollowing($user)) {
-            $authenticatedUser->following()->detach($user->id);
-            return response()->json([
-                'following' => false,
-                'followers_count' => $user->followers()->count(),
-            ]);
-        }
+    public function unfollow(User $user, Request $request)
+    {
+        $user->followers()->detach($request->user()->id);
 
-        $authenticatedUser->following()->attach($user->id);
-        return response()->json([
-            'following' => true,
-            'followers_count' => $user->followers()->count(),
-        ]);
+        return $user->loadCount('followers');
     }
 }

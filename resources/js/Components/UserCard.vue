@@ -12,19 +12,44 @@ const props = defineProps({
 });
 
 const isFollowing = ref(props.user.is_following ?? false);
-const followersCount = ref(props.user.followers?.length || 0);
+const followersCount = ref(props.user.followers_count || 0);
 const isLoading = ref(false);
 
 const toggleFollow = async () => {
     if (isLoading.value) return;
     
+    if (isFollowing.value) {
+        await unfollow();
+    } else {
+        await follow();
+    }  
+};
+
+const follow = async () => {
     try {
         isLoading.value = true;
-        const response = await axios.post(route('user.follow', props.user.id));
-        isFollowing.value = response.data.following;
-        followersCount.value = response.data.followers_count;
+        const { data } = await axios.post(route('user.follow', props.user.id));
+        
+        followersCount.value = data.followers_count;
+        
+        isFollowing.value = true;
     } catch (error) {
-        console.error('Failed to toggle follow:', error);
+        console.error('Error following user:', error);
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+const unfollow = async () => {
+    try {
+        isLoading.value = true;
+        const { data } = await axios.post(route('user.unfollow', props.user.id));
+        
+        followersCount.value = data.followers_count;
+        
+        isFollowing.value = false;
+    } catch (error) {
+        console.error('Error unfollowing user:', error);
     } finally {
         isLoading.value = false;
     }

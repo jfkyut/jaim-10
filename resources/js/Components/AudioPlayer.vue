@@ -94,42 +94,42 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="bg-white dark:bg-zinc-800 shadow-lg rounded-lg p-4 border dark:border-zinc-700 w-full max-w-2xl mx-auto">
+    <div class="bg-white dark:bg-zinc-800 shadow-lg rounded-lg p-3 border dark:border-zinc-700 w-full max-w-2xl mx-auto">
         <!-- Track Info -->
         <div class="flex justify-between items-center">
-            <div class="flex items-center mb-2">
-                <div class="w-12 h-12 bg-zinc-200 dark:bg-zinc-700 rounded-lg flex-shrink-0">
+            <div class="flex items-center mb-1">
+                <div class="w-10 h-10 bg-zinc-200 dark:bg-zinc-700 rounded-lg flex-shrink-0">
                     <!-- Album Art Placeholder -->
                     <div v-if="!album_cover" class="w-full h-full flex items-center justify-center">
-                        <i class="ri-music-2-line text-xl text-zinc-400 dark:text-zinc-500"></i>
+                        <i class="ri-music-2-line text-lg text-zinc-400 dark:text-zinc-500"></i>
                     </div>
                     <img v-else :src="`/storage/${album_cover}`" alt="Album Cover" class="w-full h-full object-cover rounded-lg" />
                 </div>
-                <div class="ml-4">
-                    <h3 class="font-semibold text-zinc-800 dark:text-zinc-100">{{ title }}</h3>
-                    <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ creator?.first_name }} {{ creator?.first_name }}</p>
+                <div class="ml-3">
+                    <h3 class="font-semibold text-sm text-zinc-800 dark:text-zinc-100">{{ title }}</h3>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400">{{ creator?.first_name }} {{ creator?.last_name }}</p>
                 </div>
             </div>
 
             <!-- Volume Control -->
             <div class="flex items-center">
-                <i v-if="volume === 0" class="ri-volume-mute-line text-xl text-zinc-600 dark:text-zinc-400"></i>
-                <i v-else class="ri-volume-up-line text-xl text-zinc-600 dark:text-zinc-400"></i>
-                <div class="flex-1 mx-3">
+                <i v-if="volume === 0" class="ri-volume-mute-line text-lg text-zinc-600 dark:text-zinc-400"></i>
+                <i v-else class="ri-volume-up-line text-lg text-zinc-600 dark:text-zinc-400"></i>
+                <div class="flex-1 mx-2">
                     <input
                         type="range"
                         min="0"
                         max="1"
                         step="0.01"
                         v-model="volume"
-                        class="w-20 accent-green-600"
+                        class="w-16 accent-green-600"
                     />
                 </div>
             </div>
         </div>
 
         <!-- Progress Bar -->
-        <div class="mb-2">
+        <div class="mb-1">
             <div class="relative">
                 <input
                     type="range"
@@ -140,38 +140,29 @@ onUnmounted(() => {
                     class="w-full h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full cursor-pointer accent-green-600"
                 />
             </div>
-            <div class="flex justify-between text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+            <div class="flex justify-between text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                 <span>{{ formatTime(currentTime) }}</span>
                 <span>{{ formatTime(duration) }}</span>
             </div>
         </div>
 
         <!-- Controls -->
-        <div class="flex items-center justify-center space-x-6">
-            <!-- previous song -->
+        <div class="flex items-center justify-center space-x-4">
             <button @click="handlePrevious" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
-                <i class="ri-skip-back-line text-2xl"></i>
+                <i class="ri-skip-back-line text-xl"></i>
             </button>
-
-            <!-- backward 5s -->
             <button @click="currentTime = currentTime - 5" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
-                <i class="ri-rewind-fill text-xl"></i>
+                <i class="ri-rewind-fill text-lg"></i>
             </button>
-
-            <!-- play -->
             <button @click="togglePlay" class="text-zinc-800 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white focus:outline-none">
-                <i v-if="playing" class="ri-pause-fill text-[2rem] rounded-full"></i>
-                <i v-else class="ri-play-fill text-[2rem] rounded-full"></i>
+                <i v-if="playing" class="ri-pause-fill text-[1.75rem] rounded-full"></i>
+                <i v-else class="ri-play-fill text-[1.75rem] rounded-full"></i>
             </button>
-
-            <!-- forward 5s -->
             <button @click="currentTime = currentTime + 5" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
-                <i class="ri-speed-fill text-xl"></i>
+                <i class="ri-speed-fill text-lg"></i>
             </button>
-
-            <!-- next song -->
             <button @click="handleNext" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
-                <i class="ri-skip-forward-line text-2xl"></i>
+                <i class="ri-skip-forward-line text-xl"></i>
             </button>
         </div>
 

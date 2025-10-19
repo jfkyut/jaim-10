@@ -94,4 +94,9 @@ class User extends Authenticatable
         }
         return $this->followers->contains(auth()->user());
     }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class, 'user_id');
+    }
 }

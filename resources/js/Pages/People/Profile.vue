@@ -6,6 +6,7 @@ import axios from 'axios';
 import { router } from '@inertiajs/vue3';
 import { useAudioStore } from '@/Stores/audio';
 import AudioPlayer from '@/Components/AudioPlayer.vue';
+import { useFollow } from '@/Composables/follow';
 
 const props = defineProps({
     profile: {
@@ -18,17 +19,29 @@ const isFollowing = ref(props.profile.is_following ?? false);
 const followersCount = ref(props.profile.followers_count || 0);
 const isLoading = ref(false);
 
+const { follow, unfollow } = useFollow(props.profile);
+
 const toggleFollow = async () => {
     if (isLoading.value) return;
     
-    try {
+    if (isFollowing.value) {
+
         isLoading.value = true;
-        const response = await axios.post(route('user.follow', props.profile.id));
-        isFollowing.value = response.data.following;
-        followersCount.value = response.data.followers_count;
-    } catch (error) {
-        console.error('Failed to toggle follow:', error);
-    } finally {
+
+        const data = await unfollow();
+
+        isFollowing.value = data.is_following;
+        followersCount.value = data.followers_count;
+
+        isLoading.value = false;
+    } else {
+        isLoading.value = true;
+
+        const data = await follow();
+
+        isFollowing.value = data.is_following;
+        followersCount.value = data.followers_count;
+
         isLoading.value = false;
     }
 };

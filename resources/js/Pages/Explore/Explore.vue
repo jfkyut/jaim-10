@@ -33,7 +33,7 @@ const { params } = storeToRefs(useMusicParamStore())
                 />
             </template>
             <template #body>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 p-2">
+                <div v-if="musics.data.length">
                     <MusicCard :musics="musics.data" />
                 </div>
                 <div v-if="musics.links.length > 3" class="mt-4">

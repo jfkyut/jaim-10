@@ -57,7 +57,7 @@ const handlePlayPlaylist = (playlist) => {
                 <div v-if="!playlist || !playlist.musics || playlist.musics.length === 0" class="text-center text-neutral-600 dark:text-neutral-400">
                     This playlist has no music yet.
                 </div>
-                <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div v-else>
                     <MusicCard :musics="playlist.musics" />
                 </div>
             </template>

@@ -3,6 +3,7 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { router } from '@inertiajs/vue3';
+import { useFollow } from '@/Composables/follow';
 
 const props = defineProps({
     user: {
@@ -10,6 +11,8 @@ const props = defineProps({
         required: true
     }
 });
+
+const { follow, unfollow } = useFollow(props.user);
 
 const isFollowing = ref(props.user.is_following ?? false);
 const followersCount = ref(props.user.followers_count || 0);
@@ -19,41 +22,28 @@ const toggleFollow = async () => {
     if (isLoading.value) return;
     
     if (isFollowing.value) {
-        await unfollow();
+
+        isLoading.value = true;
+
+        const data = await unfollow();
+
+        isFollowing.value = data.is_following;
+        followersCount.value = data.followers_count;
+
+        isLoading.value = false;
     } else {
-        await follow();
+        isLoading.value = true;
+
+        const data = await follow();
+
+        isFollowing.value = data.is_following;
+        followersCount.value = data.followers_count;
+
+        isLoading.value = false;
     }  
 };
 
-const follow = async () => {
-    try {
-        isLoading.value = true;
-        const { data } = await axios.post(route('user.follow', props.user.id));
-        
-        followersCount.value = data.followers_count;
-        
-        isFollowing.value = true;
-    } catch (error) {
-        console.error('Error following user:', error);
-    } finally {
-        isLoading.value = false;
-    }
-};
 
-const unfollow = async () => {
-    try {
-        isLoading.value = true;
-        const { data } = await axios.post(route('user.unfollow', props.user.id));
-        
-        followersCount.value = data.followers_count;
-        
-        isFollowing.value = false;
-    } catch (error) {
-        console.error('Error unfollowing user:', error);
-    } finally {
-        isLoading.value = false;
-    }
-};
 </script>
 
 <template>

@@ -71,6 +71,12 @@ const { params } = storeToRefs(useCreatorFilterStore());
                         sortable
                         reorderable-column
                     />
+                    <Column 
+                        header="Credits"
+                        field="credits"
+                        sortable
+                        reorderable-column
+                    />
                 </DataTable>
                 
                 <div class="mt-4" v-if="creators?.links?.length > 3">

@@ -19,6 +19,7 @@ import { router } from '@inertiajs/vue3';
 import CreatePlaylistModal from './authlayout-partials/CreatePlaylistModal.vue';
 import ThemeSwitcher from '@/Components/ThemeSwitcher.vue';
 import DropdownButton from '@/Components/dropdowns/DropdownButton.vue';
+import CreditModal from './authlayout-partials/CreditModal.vue';
 
 const { toggleSidebar } = useAuthLayoutStore();
 const { sidebarOpen } = storeToRefs(useAuthLayoutStore());
@@ -176,6 +177,8 @@ onUnmounted(() => {
                     <template #content>
                         <DropdownLink :to="route('profile.edit')">Profile</DropdownLink>
                         
+                        <CreditModal />
+
                         <DropdownButton>
                             <div class="flex justify-between">
                                 <span>Theme</span>

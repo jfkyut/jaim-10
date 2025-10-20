@@ -4,36 +4,40 @@ namespace App\Http\Controllers;
 
 use App\Models\Music;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FavoriteController extends Controller
 {
     public function index(Request $request)
     {
-        $query = $request->user()->favorites()
+        $favoriteQuery = $request->user()->favorites()
             ->with([
                 'music.creator', 
                 'music.album'
             ]);
 
         if ($request->filled('keyword')) {
-            $query->whereHas('music', function($music) use ($request) {
+            $favoriteQuery->whereHas('music', function($music) use ($request) {
                 $music->where('title', 'like', '%' . $request->query('keyword') . '%');
             });
         }
 
         return inertia('Favorite/Favorite', [
-            'favorites' => $query->latest()->paginate(100),
-            'filters' => [
-                'search' => $request->search
-            ]
+            'favorites' => $favoriteQuery->latest()->paginate(100),
         ]);
     }
 
     public function store(Request $request, Music $music)
     {
-        $request->user()->favorites()->create([
-            'music_id' => $music->id,
-        ]);
+        DB::transaction(function () use ($request, $music) {
+            // Create the favorite
+            $request->user()->favorites()->create([
+                'music_id' => $music->id,
+            ]);
+
+            // Add 1 credit to the music creator
+            $music->creator->increment('credits', 1);
+        });
 
         return back();
     }

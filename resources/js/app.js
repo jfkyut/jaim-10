@@ -47,8 +47,7 @@ createInertiaApp({
                 theme: {
                     preset: Material,
                     options: {
-                        darkModeSelector: 'system',
-                        cssLayer: false,
+                        darkModeSelector: '.dark'
                     }
                 },
                 ripple: true,

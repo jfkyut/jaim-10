@@ -25,7 +25,8 @@ class User extends Authenticatable
         'gender',
         'birthday',
         'password',
-        'role_id'
+        'role_id',
+        'credits'
     ];
 
     protected $appends = ['is_following'];
@@ -98,5 +99,10 @@ class User extends Authenticatable
     public function favorites()
     {
         return $this->hasMany(Favorite::class, 'user_id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(UserTransaction::class, 'user_id');
     }
 }

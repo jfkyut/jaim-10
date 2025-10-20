@@ -45,8 +45,13 @@ createInertiaApp({
             })
             .use(PrimeVue, {
                 theme: {
-                    preset: Material
-                }
+                    preset: Material,
+                    options: {
+                        darkModeSelector: 'system',
+                        cssLayer: false,
+                    }
+                },
+                ripple: true,
             })
             .mount(el);
     },

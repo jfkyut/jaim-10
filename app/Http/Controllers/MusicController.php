@@ -32,8 +32,10 @@ class MusicController extends Controller
         });
 
         return inertia('Explore/Explore', [
-            'musics' => $musicQuery->with('creator')
-                                    ->with('album')
+            'musics' => $musicQuery->with([
+                                        'creator', 
+                                        'album'
+                                    ])
                                     ->latest()
                                     ->paginate(100)
         ]);

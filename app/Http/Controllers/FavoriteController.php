@@ -7,9 +7,26 @@ use Illuminate\Http\Request;
 
 class FavoriteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return inertia('Favorite/Favorite');
+        $query = $request->user()->favorites()
+            ->with([
+                'music.creator', 
+                'music.album'
+            ]);
+
+        if ($request->filled('keyword')) {
+            $query->whereHas('music', function($music) use ($request) {
+                $music->where('title', 'like', '%' . $request->query('keyword') . '%');
+            });
+        }
+
+        return inertia('Favorite/Favorite', [
+            'favorites' => $query->latest()->paginate(100),
+            'filters' => [
+                'search' => $request->search
+            ]
+        ]);
     }
 
     public function store(Request $request, Music $music)
@@ -18,13 +35,13 @@ class FavoriteController extends Controller
             'music_id' => $music->id,
         ]);
 
-        back();
+        return back();
     }
 
     public function destroy(Request $request, Music $music)
     {
         $request->user()->favorites()->where('music_id', $music->id)->delete();
 
-        back();
+        return back();
     }
 }

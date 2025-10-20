@@ -2,10 +2,10 @@
 import { useAudioStore } from '@/Stores/audio';
 import { storeToRefs } from 'pinia';
 import { Button } from 'primevue';
-import { router, Link } from '@inertiajs/vue3';
+import { router, Link, useForm } from '@inertiajs/vue3';
 import AddToPlaylistModal from './music-card-partials/AddToPlaylistModal.vue';
 import { useWindowSize } from '@vueuse/core';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 defineProps({
     musics: {
@@ -20,9 +20,32 @@ const isLargeScreen = computed(() => width.value >= 1024);
 const audioStore = useAudioStore()
 const { currentSong } = storeToRefs(useAudioStore());
 
+const isLoading = ref(false);
+
 const playSong = (music) => {
     audioStore.playSong(music)
 }
+
+const toggleFavorite = (music) => {
+    isLoading.value = true;
+
+    if (music.is_favorite) {
+        router.delete(route('favorite.destroy', music.id), {
+            preserveState: true,
+            onSuccess: () => {
+                music.is_favorite = false;
+            }
+        });
+    } else {
+        router.post(route('favorite.store', music.id), {}, {
+            preserveState: true,
+            onSuccess: () => {
+                music.is_favorite = true;
+            }
+        });
+    }   
+}
+
 </script>
 
 <template>
@@ -83,6 +106,15 @@ const playSong = (music) => {
 
                 <!-- Action Buttons -->
                 <div class="flex items-center gap-2 flex-shrink-0">
+                    <Button
+                        v-if="$page.props.auth.user"
+                        severity="secondary"
+                        :icon="music.is_favorite ? 'ri-heart-fill' : 'ri-heart-line'"
+                        :class="{ 'text-red-500': music.is_favorite }"
+                        text
+                        @click="toggleFavorite(music)"
+                        aria-label="Toggle favorite"
+                    />
                     <AddToPlaylistModal 
                         v-if="$page.props.auth.user?.playlists && !route().current('playlist.*')" 
                         :musicId="music.id" 

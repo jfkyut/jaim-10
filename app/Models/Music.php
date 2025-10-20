@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Music extends Model
 {
@@ -20,6 +21,8 @@ class Music extends Model
         'album_id'
     ];
 
+    protected $appends = ['is_favorite'];
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -28,5 +31,23 @@ class Music extends Model
     public function album()
     {
         return $this->belongsTo(Album::class, 'album_id');
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class, 'music_id');
+    }
+
+    public function isFavoriteBy(User $user)
+    {
+        return $this->favorites()->where('user_id', $user?->id)->exists();
+    }
+
+    public function getIsFavoriteAttribute()
+    {
+        if (!auth()->check()) {
+            return false;
+        }
+        return $this->favorites()->where('user_id', auth()->id())->exists();
     }
 }

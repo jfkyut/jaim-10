@@ -1,7 +1,7 @@
 <script setup>
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
+import DropdownLink from '@/Components/dropdowns/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
@@ -17,6 +17,8 @@ import { ref, provide, onMounted, onUnmounted } from 'vue';
 import CreateAlbumModal from './authlayout-partials/CreateAlbumModal.vue';
 import { router } from '@inertiajs/vue3';
 import CreatePlaylistModal from './authlayout-partials/CreatePlaylistModal.vue';
+import ThemeSwitcher from '@/Components/ThemeSwitcher.vue';
+import DropdownButton from '@/Components/dropdowns/DropdownButton.vue';
 
 const { toggleSidebar } = useAuthLayoutStore();
 const { sidebarOpen } = storeToRefs(useAuthLayoutStore());
@@ -172,10 +174,17 @@ onUnmounted(() => {
                         </Button>
                     </template>
                     <template #content>
-                        <DropdownLink :href="route('profile.edit')">Profile</DropdownLink>
+                        <DropdownLink :to="route('profile.edit')">Profile</DropdownLink>
                         
+                        <DropdownButton>
+                            <div class="flex justify-between">
+                                <span>Theme</span>
+                                <ThemeSwitcher />
+                            </div>
+                        </DropdownButton>
+
                         <DropdownLink
-                            href="#"
+                            to="#"
                             @click.prevent="$inertia.post(route('logout'))"
                         >
                             Log Out

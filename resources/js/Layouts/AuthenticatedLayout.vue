@@ -74,6 +74,25 @@ onUnmounted(() => {
                     <span v-if="sidebarOpen" class="ml-2">Dashboard</span>
                 </NavLink>
 
+                <NavDropdown 
+                    title="Redeem Requests" 
+                    v-if="$page.props.auth.user && $page.props.auth.user.role.name === 'admin'"
+                    :active="route().current('redeem.*')"
+                >
+                    <template #icon>
+                        <i class="ri-home-line"></i>
+                    </template>
+                    <NavLink :href="route('redeem.pending')" :active="route().current('redeem.pending')">
+                        Pending
+                    </NavLink>
+                    <NavLink :href="route('redeem.approved')" :active="route().current('redeem.approved')">
+                        Approved
+                    </NavLink>
+                    <NavLink :href="route('redeem.rejected')" :active="route().current('redeem.rejected')">
+                        Rejected
+                    </NavLink>
+                </NavDropdown>
+
                 <NavLink v-if="$page.props.auth.user && $page.props.auth.user.role.name === 'admin'" :href="route('creator.index')" :active="route().current('creator.*')" class="mb-2 flex items-center">
                     <i class="ri-user-6-line"></i>
                     <span class="ms-2" v-if="sidebarOpen">Creators</span>

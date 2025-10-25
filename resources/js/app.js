@@ -45,7 +45,7 @@ createInertiaApp({
             })
             .use(PrimeVue, {
                 theme: {
-                    preset: Material,
+                    preset: Nora,
                     options: {
                         darkModeSelector: '.dark'
                     }

@@ -12,7 +12,7 @@ class UserTransaction extends Model
     protected $fillable = [
         'user_id',
         'amount',
-        'balance_after',
+        'credit_balance',
         'credits_change'
     ];
 

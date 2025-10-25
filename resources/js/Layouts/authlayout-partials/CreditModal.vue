@@ -5,6 +5,7 @@ import Modal from '@/Components/Modal.vue';
 import Container from '@/Components/containers/Container.vue';
 import { ref } from 'vue';
 import { Tag, Button } from 'primevue';
+import CreateRedeemModal from './credit-modal-partials/CreateRedeemModal.vue';
 
 const isShowModal = ref(false);
 
@@ -32,9 +33,7 @@ const isShowModal = ref(false);
                             Your Credits
                         </h3>
                     </header>
-                    <Button :disabled="$page.props.auth.user.credits < 1000">
-                        Redeem
-                    </Button>
+                    <CreateRedeemModal />
                 </div>
                 
             </template>

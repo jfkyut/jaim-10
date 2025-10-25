@@ -7,6 +7,7 @@ use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\MusicController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PeopleController;
+use App\Http\Controllers\RedeemController;
 use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FavoriteController;
@@ -74,6 +75,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorite.index');
     Route::post('/favorites/{music}/store', [FavoriteController::class, 'store'])->name('favorite.store');
     Route::delete('/favorites/{music}/destroy', [FavoriteController::class, 'destroy'])->name('favorite.destroy');
+
+    Route::get('/redeems-pending', [RedeemController::class, 'pending'])->name('redeem.pending');
+    Route::get('/redeems-approved', [RedeemController::class, 'approved'])->name('redeem.approved');
+    Route::get('/redeems-rejected', [RedeemController::class, 'rejected'])->name('redeem.rejected');
+    Route::post('/redeem/store', [RedeemController::class, 'store'])->name('redeem.store');
+    Route::post('/redeem/{redeem}/approve', [RedeemController::class, 'approve'])->name('redeem.approve');
+    Route::post('/redeem/{redeem}/reject', [RedeemController::class, 'reject'])->name('redeem.reject');
+
 });
 
 require __DIR__.'/auth.php';

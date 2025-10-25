@@ -44,7 +44,13 @@ class FavoriteController extends Controller
 
     public function destroy(Request $request, Music $music)
     {
-        $request->user()->favorites()->where('music_id', $music->id)->delete();
+        DB::transaction(function () use ($request, $music) {
+            // Remove the favorite
+            $request->user()->favorites()->where('music_id', $music->id)->delete();
+
+            // Reduce 1 credit from the music creator
+            $music->creator->decrement('credits', 1);
+        });
 
         return back();
     }

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests\StoreMusicRequest;
 use App\Models\Music;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StoreMusicRequest;
 
 class MusicController extends Controller
 {
@@ -61,5 +62,27 @@ class MusicController extends Controller
         } 
 
         return back();
+    }
+
+    public function stream(Request $request, Music $music)
+    {
+        DB::transaction(function () use ($request, $music) {
+            // Record the stream
+            $music->streams()->create([
+                'user_id' => $request->user()?->id
+            ]);
+
+            // Increment creator's credits
+            $music->creator->increment('credits', 1);
+
+            // Record the transaction
+            $music->creator->transactions()->create([
+                'amount' => 1,
+                'credits_change' => 1,
+                'balance_after' => $music->creator->credits
+            ]);
+        });
+
+        return response()->json(['success' => true]);
     }
 }

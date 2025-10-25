@@ -50,4 +50,9 @@ class Music extends Model
         }
         return $this->favorites()->where('user_id', auth()->id())->exists();
     }
+
+    public function streams()
+    {
+        return $this->hasMany(MusicStream::class, 'music_id');
+    }
 }

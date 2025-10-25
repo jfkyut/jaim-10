@@ -62,9 +62,19 @@ const togglePlay = () => {
 }
 
 // Add event listener for when song ends
-const handleSongEnd = () => {
+const handleSongEnd = async () => {
+    // Credit the creator when song finishes
+    if (currentSong.value) {
+        try {
+            await axios.post(route('music.stream', currentSong.value.id));
+        } catch (error) {
+            console.error('Error crediting stream:', error);
+        }
+    }
+
+    // Continue with existing next song logic
     if (audioStore.playNext()) {
-        playing.value = true
+        playing.value = true;
     }
 }
 
@@ -81,6 +91,10 @@ const handleNext = () => {
 }
 
 onMounted(() => {
+    if (audio.value) {
+        audio.value.addEventListener('ended', handleSongEnd);
+    }
+    
     volume.value = 0.5;
     currentTime.value = 60;
 })

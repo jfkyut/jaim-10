@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('music/upload', [MusicController::class, 'store'])->name('music.store');
+    Route::post('/music/{music}/stream', [MusicController::class, 'stream'])->name('music.stream');
 
     // album routes
     Route::get('creation/my-albums', [App\Http\Controllers\CreationController::class, 'myAlbums'])->name('creation.myAlbums');

@@ -7,6 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { InputText, Checkbox, Button } from 'primevue';
+import { useToast } from 'vue-toastification';
 
 defineProps({
     canResetPassword: {
@@ -17,6 +18,8 @@ defineProps({
     },
 });
 
+const toast = useToast();
+
 const form = useForm({
     email: '',
     password: '',
@@ -26,6 +29,9 @@ const form = useForm({
 const submit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
+        onError: () => {
+            toast.error('Login Failed. Please check your credentials and try again.');
+        }
     });
 };
 </script>

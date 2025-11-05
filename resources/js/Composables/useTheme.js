@@ -1,7 +1,8 @@
 import { ref, onMounted, watch } from 'vue'
 
 export function useTheme() {
-    const currentTheme = ref(false)
+    // Default to dark mode
+    const currentTheme = ref(true)
 
     const toggleTheme = () => {
         if (currentTheme.value) {
@@ -14,7 +15,15 @@ export function useTheme() {
 
     onMounted(() => {
         const savedTheme = localStorage.getItem('theme')
-        currentTheme.value = savedTheme === 'dark'
+
+        // If a theme is saved, use it; otherwise, stay dark by default
+        if (savedTheme) {
+            currentTheme.value = savedTheme === 'dark'
+        } else {
+            currentTheme.value = true // dark mode default
+            localStorage.setItem('theme', 'dark')
+        }
+
         toggleTheme()
     })
 

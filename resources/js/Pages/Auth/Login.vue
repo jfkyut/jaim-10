@@ -8,6 +8,7 @@ import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { InputText, Checkbox, Button } from 'primevue';
 import { useToast } from 'vue-toastification';
+import TermsModal from './login-partials/TermsModal.vue';
 
 defineProps({
     canResetPassword: {
@@ -24,6 +25,7 @@ const form = useForm({
     email: '',
     password: '',
     remember: false,
+    agree: false,
 });
 
 const submit = () => {
@@ -69,8 +71,18 @@ const submit = () => {
                 <a :href="route('password.request')" class="ms-auto text-sm text-teal-700 hover:underline dark:text-teal-500">Lost Password?</a>
             </div>
             <Button type="submit" class="w-full">Login to your account</button>
-            <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
-                Not registered? <a :href="route('register')" class="text-teal-700 hover:underline dark:text-teal-500">Create account</a>
+            
+            <div class="flex justify-between items-center">
+                <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                    Not registered? <a :href="route('register')" class="text-teal-700 hover:underline dark:text-teal-500">Create account</a>
+                </div>
+                <div>
+                    <Checkbox v-model="form.agree" binary />
+                    <TermsModal />
+                    <div class="mt-2">
+                        <InputError :message="form.errors.agree" class="mt-2" />
+                    </div>
+                </div>
             </div>
         </form>
     </GuestLayout>

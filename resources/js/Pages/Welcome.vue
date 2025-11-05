@@ -12,7 +12,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="JAIM - AI Music Streaming Platform" />
+    <Head title="JAM - AI Music Streaming Platform" />
 
     <div class="relative min-h-screen bg-gradient-to-br from-green-900 to-black">
         <!-- Navigation -->

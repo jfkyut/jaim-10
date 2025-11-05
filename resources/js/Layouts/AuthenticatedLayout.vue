@@ -58,7 +58,7 @@ onUnmounted(() => {
             <!-- Logo -->
             <div class="h-16 flex items-center">
                 <!-- <ApplicationLogo class="block h-9 w-auto fill-current text-zinc-800 dark:text-zinc-200" /> -->
-                <header @click="router.get(route('welcome'))" class="mt-4 hover:cursor-pointer ml-3 w-full font-inter text-4xl font-bold text-center tracking-wide text-zinc-800 dark:text-zinc-200">
+                <header @click="router.get(route('welcome'))" class="mt-4 hover:cursor-pointer w-full font-inter text-4xl font-bold text-center tracking-wide text-zinc-800 dark:text-zinc-200">
                     <h1 v-if="sidebarOpen">JAIM</h1>
                     <h1 v-else>J</h1>
                 </header>
@@ -80,7 +80,7 @@ onUnmounted(() => {
                     :active="route().current('redeem.*')"
                 >
                     <template #icon>
-                        <i class="ri-home-line"></i>
+                        <i class="ri-list-check-3"></i>
                     </template>
                     <NavLink :href="route('redeem.pending')" :active="route().current('redeem.pending')">
                         Pending
@@ -200,7 +200,7 @@ onUnmounted(() => {
 
                         <DropdownButton>
                             <div class="flex justify-between">
-                                <span>Theme</span>
+                                <span>Dark</span>
                                 <ThemeSwitcher />
                             </div>
                         </DropdownButton>

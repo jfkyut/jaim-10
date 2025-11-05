@@ -45,19 +45,25 @@ class MusicController extends Controller
     public function store(StoreMusicRequest $request)
     {
         if ($request->hasFile("music")) {
-            $file = $request->file("music");
-            $path = $file->store("music_files", "public");
+            
 
             // Save the music details to the database
-            Music::create([
+            $music = Music::create([
                 'title' => $request->validated("title"),
                 'generated_by' => $request->validated("generated_by"),
                 'generated_at' => $request->validated("generated_at"),
                 'description' => $request->validated("description"),
                 'lyrics' => $request->validated("lyrics"),
                 'user_id' => auth()->user()->id, // Assuming user is authenticated
-                'file_path' => $path,
+                
                 'album_id' => $request->validated("album_id"),
+            ]);
+
+            $file = $request->file("music");
+            $path = $file->store("music_files/" . $music->id, "public");
+
+            $music->update([
+                'file_path' => $path,
             ]);
         } 
 

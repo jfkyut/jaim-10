@@ -31,8 +31,8 @@ const isShowModal = ref(false);
             </template>
             <template #body>
                 <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
-                    <p class="font-bold">About JAIM</p>
-                    <p>JAIM is a platform that distributes AI-generated music sourced from third parties or uploaded by rights-holding users. JAIM does not create music itself.</p>
+                    <p class="font-bold">About JAM AI</p>
+                    <p>JAM AI is a platform that distributes AI-generated music sourced from third parties or uploaded by rights-holding users. JAM AI does not create music itself.</p>
 
                     <p class="font-bold">Music Plans</p>
                     <ul class="list-disc list-inside ml-4 space-y-1">
@@ -55,23 +55,23 @@ const isShowModal = ref(false);
                     </ul>
 
                     <p class="mt-4 p-2 border-l-4 border-yellow-500 bg-yellow-50 dark:bg-gray-800 dark:border-yellow-400">
-                        **Note:** Each music track or song provided on JAIM has a defined duration or length (in 3-5:00 minutes), which is clearly displayed on the platform. Users are licensed to use the music only within the duration specified and under the rights granted by their selected plan.
+                        **Note:** Each music track or song provided on JAM AI has a defined duration or length (in 3-5:00 minutes), which is clearly displayed on the platform. Users are licensed to use the music only within the duration specified and under the rights granted by their selected plan.
                     </p>
 
                     <p class="font-bold">Copyright</p>
-                    <p>JAIM licenses music but does not claim ownership. Users receive limited-use rights based on their plan. Reuploading or reselling tracks is prohibited. Takedown procedures are in place for copyright claims.</p>
+                    <p>JAM AI licenses music but does not claim ownership. Users receive limited-use rights based on their plan. Reuploading or reselling tracks is prohibited. Takedown procedures are in place for copyright claims.</p>
 
                     <p class="font-bold">Acceptable Use</p>
                     <p>No use for illegal, violent, or harmful purposes. No NFT minting, sublicensing, or uploading music you don't own.</p>
 
                     <p class="font-bold">Intellectual Property</p>
-                    <p>JAIM owns its branding and interface; music remains with original creators. JAIM operates under licensing deals.</p>
+                    <p>JAM AI owns its branding and interface; music remains with original creators. JAM AI operates under licensing deals.</p>
 
                     <p class="font-bold">Account Termination</p>
                     <p>Violations may result in account suspension or permanent bans.</p>
 
                     <p class="font-bold">Privacy</p>
-                    <p>JAIM collects user data (e.g., name, email, IP) for personalization and platform improvement. Data is protected, not sold, and shared only when necessary.</p>
+                    <p>JAM AI collects user data (e.g., name, email, IP) for personalization and platform improvement. Data is protected, not sold, and shared only when necessary.</p>
 
                     <hr class="my-4 border-gray-200 dark:border-gray-700">
 
@@ -97,9 +97,9 @@ const isShowModal = ref(false);
                         <li>You must own or have permission for the music you upload.</li>
                         <li>No unauthorized copyrighted material (samples, loops, stems).</li>
                         <li>Provide correct metadata (title, artist, genre, copyright).</li>
-                        <li>Meet JAIM's audio quality standards.</li>
+                        <li>Meet JAM AI's audio quality standards.</li>
                         <li>No uploads that are already exclusively licensed elsewhere.</li>
-                        <li>Agree to JAIM's licensing terms.</li>
+                        <li>Agree to JAM AI's licensing terms.</li>
                         <li>Follow all community and content guidelines.</li>
                         <li>Not following these may lead to removal of your music or suspension of your Pro account.</li>
                     </ul>

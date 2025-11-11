@@ -109,12 +109,15 @@ const toggleFavorite = (music) => {
                     <Button
                         v-if="$page.props.auth.user"
                         severity="secondary"
-                        :icon="music.is_favorite ? 'ri-heart-fill' : 'ri-heart-line'"
-                        :class="{ 'text-red-500': music.is_favorite }"
                         text
                         @click="toggleFavorite(music)"
                         aria-label="Toggle favorite"
-                    />
+                        :title="music.is_favorite ? 'Remove from favorites' : 'Add to favorites'"
+                    >
+                        <span :class="{ 'text-red-500': music.is_favorite }">
+                            <i :class="music.is_favorite ? 'ri-heart-fill' : 'ri-heart-line'"></i>
+                        </span>
+                    </Button>
                     <AddToPlaylistModal 
                         v-if="$page.props.auth.user?.playlists && !route().current('playlist.*')" 
                         :musicId="music.id" 
@@ -128,8 +131,9 @@ const toggleFavorite = (music) => {
                         :href="`/storage/${music.file_path}`"
                         target="_blank" 
                         rel="noopener noreferrer"
+                        title="Open"
                     >
-                        Open
+                        <i class="ri-external-link-line"></i>
                     </Button>
                 </div>
             </div>

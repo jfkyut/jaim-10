@@ -105,4 +105,17 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserTransaction::class, 'user_id');
     }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function activePlan()
+    {
+        return $this->subscriptions()
+            ->where('status', 'active')
+            ->where('ends_at', '>', now())
+            ->first();
+    }
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\PlaylistController;
+use App\Http\Controllers\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,6 +84,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/redeem/{redeem}/approve', [RedeemController::class, 'approve'])->name('redeem.approve');
     Route::post('/redeem/{redeem}/reject', [RedeemController::class, 'reject'])->name('redeem.reject');
 
+    Route::get('subscriptions', [SubscriptionController::class, 'index'])->name('subscription.index');
+    Route::post('subscriptions/{plan}/subscribe', [SubscriptionController::class, 'subscribe'])->name('subscription.subscribe');
+    Route::get('subscriptions/success', [SubscriptionController::class, 'success'])->name('subscription.success');
 });
 
 require __DIR__.'/auth.php';

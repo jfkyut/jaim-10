@@ -46,7 +46,6 @@ class MusicController extends Controller
     {
         if ($request->hasFile("music")) {
             
-
             // Save the music details to the database
             $music = Music::create([
                 'title' => $request->validated("title"),

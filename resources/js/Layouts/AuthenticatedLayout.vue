@@ -59,7 +59,7 @@ onUnmounted(() => {
             <div class="h-16 flex items-center">
                 <!-- <ApplicationLogo class="block h-9 w-auto fill-current text-zinc-800 dark:text-zinc-200" /> -->
                 <header @click="router.get(route('welcome'))" class="mt-4 hover:cursor-pointer w-full font-inter text-4xl font-bold text-center tracking-wide text-zinc-800 dark:text-zinc-200">
-                    <h1 v-if="sidebarOpen">JAIM</h1>
+                    <h1 v-if="sidebarOpen">JAM</h1>
                     <h1 v-else>J</h1>
                 </header>
             </div>
@@ -144,7 +144,7 @@ onUnmounted(() => {
                             v-for="playlist in $page.props.auth.user.playlists" 
                             :key="playlist.id"
                             :href="route('playlist.show', playlist.id)"
-                            :active="route().current('playlist.show') && route().params.id == playlist.id"
+                            :active="route().current('playlist') && route().params.id == playlist.id"
                         >
                             <i class="ri-playlist-fill"></i>
                             <span class="ms-2">{{ playlist.name }}</span>
@@ -153,7 +153,7 @@ onUnmounted(() => {
                     
                 </NavDropdown>
                 <NavDropdown
-                    v-if="$page.props.auth.user"
+                    v-if="$page.props.auth.user.role.name !== 'listener'"
                     title="My Creations"
                     :active="route().current('creation.*')"
                 >
@@ -167,6 +167,10 @@ onUnmounted(() => {
                     </NavLink>
                 </NavDropdown>
                 
+                <NavLink v-if="$page.props.auth.user" :href="route('subscription.index')" :active="route().current('subscription.*')" class="mb-2 flex items-center">
+                    <i class="ri-money-dollar-circle-line"></i>
+                    <span class="ms-2" v-if="sidebarOpen">Subscription Plans</span>
+                </NavLink>
             </nav>
         </div>
 

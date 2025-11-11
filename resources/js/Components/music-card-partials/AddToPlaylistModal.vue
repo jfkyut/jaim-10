@@ -1,7 +1,7 @@
 <script setup>
 
 import { ref } from 'vue';
-import { Button } from 'primevue';
+import { Button, Select } from 'primevue';
 import Modal from '@/Components/Modal.vue';
 import { useForm } from '@inertiajs/vue3';
 import { useToast } from 'vue-toastification';
@@ -48,8 +48,9 @@ const submit = () => {
         icon="ri-add-line"
         text
         class="w-full sm:w-auto hover:bg-neutral-100 dark:hover:bg-neutral-700"
+        title="Add to playlist"
     >
-        Add to Playlist
+        <i class="ri-add-line"></i>
     </Button>
 
     <Modal
@@ -79,19 +80,16 @@ const submit = () => {
                         <label for="playlist" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                             Select Playlist
                         </label>
-                        <select
-                            id="playlist"
+                        
+                        <Select 
+                            filter
                             v-model="form.playlist_id"
-                            class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-700 dark:text-white"
-                            required
-                        >
-                            <option value="" disabled>Select a playlist</option>
-                            <!-- Options should be populated dynamically -->
-                            <option :value="playlist.id" v-for="(playlist, index) in $page.props.auth.user.playlists" :key="index">
-                                {{ playlist?.name }}
-                            </option>
-                           
-                        </select>
+                            :options="$page.props.auth.user.playlists"
+                            option-label="name"
+                            option-value="id"
+                            placeholder="Select a playlist"
+                            class="w-full"
+                        />
                     </div>
                     <button type="submit" ref="submitButtonRef" class="hidden"></button>
                 </form>

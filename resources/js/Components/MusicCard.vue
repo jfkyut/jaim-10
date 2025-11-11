@@ -123,7 +123,7 @@ const toggleFavorite = (music) => {
                         :musicId="music.id" 
                     />
                     <Button
-                        v-if="isLargeScreen"
+                        v-if="isLargeScreen && $page.props.auth.user.role.name !== 'listener'"
                         severity="secondary"
                         icon="ri-external-link-line"
                         text

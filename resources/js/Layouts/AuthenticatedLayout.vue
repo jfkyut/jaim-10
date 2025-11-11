@@ -167,9 +167,14 @@ onUnmounted(() => {
                     </NavLink>
                 </NavDropdown>
                 
-                <NavLink v-if="$page.props.auth.user" :href="route('subscription.index')" :active="route().current('subscription.*')" class="mb-2 flex items-center">
+                <NavLink v-if="$page.props.auth.user" :href="route('subscription.create')" :active="route().current('subscription.*')" class="mb-2 flex items-center">
                     <i class="ri-money-dollar-circle-line"></i>
                     <span class="ms-2" v-if="sidebarOpen">Subscription Plans</span>
+                </NavLink>
+
+                <NavLink v-if="$page.props.auth.user" :href="route('subscription.index')" :active="route().current('subscription.*')" class="mb-2 flex items-center">
+                    <i class="ri-file-history-line"></i>
+                    <span class="ms-2" v-if="sidebarOpen">Subscription History</span>
                 </NavLink>
             </nav>
         </div>
@@ -198,7 +203,8 @@ onUnmounted(() => {
                         </Button>
                     </template>
                     <template #content>
-                        <DropdownLink :to="route('profile.edit')">Profile</DropdownLink>
+                        <DropdownLink :to="route('people.show', $page.props.auth.user.id)">My Profile</DropdownLink>
+                        <DropdownLink :to="route('profile.edit')">Edit Profile</DropdownLink>
                         
                         <CreditModal />
 
@@ -235,6 +241,8 @@ onUnmounted(() => {
             <!-- Main Content Area -->
             <main class="flex-1 overflow-x-hidden max-h-[92vh] overflow-y-auto bg-zinc-100 dark:bg-zinc-900 p-4 md:p-6 relative">
                 <slot />
+
+                <!-- <Ad /> -->
 
                 <!-- Audio Player -->
                 <div v-if="currentSong" class="fixed bottom-2 left-0 right-0 z-40">

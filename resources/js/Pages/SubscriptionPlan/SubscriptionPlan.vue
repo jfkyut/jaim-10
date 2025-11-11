@@ -52,8 +52,7 @@ function getPlanBadge(plan) {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div v-for="plan in plans" :key="plan.name" 
                      :class="[
-                         'border dark:border-zinc-600 bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm transition-shadow relative',
-                         plan.is_free ? 'border-green-500' : 'hover:shadow-md'
+                         'border dark:border-zinc-600 bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-sm transition-shadow relative'
                      ]">
                     <div v-if="getPlanBadge(plan)" 
                          :class="[

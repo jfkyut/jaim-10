@@ -12,6 +12,18 @@ class SubscriptionController extends Controller
 {
     public function index()
     {
+        $subscriptions = Subscription::where('user_id', auth()->id())
+                            ->with('plan')
+                            ->latest()
+                            ->paginate(100);
+
+        return inertia('SubscriptionPlan/SubscriptionHistory', [
+            'subscriptions' => $subscriptions
+        ]);
+    }
+
+    public function create()
+    {
         $plans = Plan::all();
         $currentPlan = auth()->user()->activePlan();
 

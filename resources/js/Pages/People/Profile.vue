@@ -102,7 +102,7 @@ const isTrackPlaying = (track) => {
                         </div>
 
                         <!-- Follow Button -->
-                        <div class="mt-4 sm:mt-0">
+                        <div class="mt-4 sm:mt-0" v-if="$page.props.auth.user.id !== profile.id">
                             <button 
                                 @click="toggleFollow"
                                 :disabled="isLoading"

@@ -1,7 +1,5 @@
 <script setup>
-
 import { ref } from 'vue';
-import axios from 'axios';
 import { router } from '@inertiajs/vue3';
 import { useFollow } from '@/Composables/follow';
 
@@ -14,36 +12,26 @@ const props = defineProps({
 
 const { follow, unfollow } = useFollow(props.user);
 
-const isFollowing = ref(props.user.is_following ?? false);
-const followersCount = ref(props.user.followers_count || 0);
+const isFollowing = ref(Boolean(props.user.is_following)); // cast 0/1 to boolean
+const followersCount = ref(props.user.followers_count ?? 0);
 const isLoading = ref(false);
 
 const toggleFollow = async () => {
     if (isLoading.value) return;
-    
-    if (isFollowing.value) {
+    isLoading.value = true;
 
-        isLoading.value = true;
+    try {
+        const data = isFollowing.value ? await unfollow() : await follow();
 
-        const data = await unfollow();
-
-        isFollowing.value = data.is_following;
-        followersCount.value = data.followers_count;
-
+        // server returns { followers_count, is_following }
+        if (data) {
+            isFollowing.value = Boolean(data.is_following);
+            followersCount.value = Number(data.followers_count ?? followersCount.value);
+        }
+    } finally {
         isLoading.value = false;
-    } else {
-        isLoading.value = true;
-
-        const data = await follow();
-
-        isFollowing.value = data.is_following;
-        followersCount.value = data.followers_count;
-
-        isLoading.value = false;
-    }  
+    }
 };
-
-
 </script>
 
 <template>
@@ -63,9 +51,9 @@ const toggleFollow = async () => {
                 <h3 class="text-xl font-bold text-zinc-800 dark:text-zinc-100">
                     {{ user.first_name }} {{ user.last_name }}
                 </h3>
-                <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
+                <!-- <p class="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
                     {{ user.email }}
-                </p>
+                </p> -->
             </div>
 
             <!-- Follow Button -->

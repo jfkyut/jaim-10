@@ -7,7 +7,7 @@ export const useFollow = (user) => {
             
             return {
                 followers_count: data.followers_count,
-                is_following: data.is_following
+                is_following: true
             }
         } catch (error) {
             console.error('Error following user:', error);
@@ -20,7 +20,7 @@ export const useFollow = (user) => {
             
             return {
                 followers_count: data.followers_count,
-                is_following: data.is_following
+                is_following: false
             }
         } catch (error) {
             console.error('Error unfollowing user:', error);

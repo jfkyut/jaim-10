@@ -23,48 +23,59 @@ class PeopleController extends Controller
             }
         });
 
+        // Add an is_following count (0 or 1) filtered by current user to avoid N+1 queries.
         return inertia('People/People', [
-            'people' => $userQuery->withCount([
-                                    'followers', 
-                                    'following', 
-                                    'tracks'
-                                ])
-                                ->with([
-                                    'tracks', 
-                                    'playlists', 
-                                    'albums',
-                                    'following',
-                                    'followers' => function($followers) {
-                                        $followers->where('follower_id', auth()->id());
-                                    }, 
-                                ])
-                                ->latest()
-                                ->paginate(100)
+            'people' => $userQuery
+                ->withCount([
+                    'followers',
+                    'following',
+                    'tracks',
+                    // alias a filtered followers count as `is_following`
+                    'followers as is_following' => function ($q) {
+                        $q->where('follower_id', auth()->id());
+                    },
+                ])
+                ->with([
+                    'tracks',
+                    'playlists',
+                    'albums',
+                    'following',
+                    // you can keep this filtered followers relation if other code relies on it
+                    'followers' => function ($followers) {
+                        $followers->where('follower_id', auth()->id());
+                    },
+                ])
+                ->latest()
+                ->paginate(100)
         ]);
     }
 
-    public function show(User $user)
+    // For the profile page, use the isFollowing() method once and attach boolean to the model
+    public function show(Request $request, User $user)
     {
         $user = User::where('id', $user->id)
                     ->withCount([
-                        'followers', 
-                        'following', 
-                        'tracks'
+                        'followers',
+                        'following',
+                        'tracks',
                     ])
                     ->with([
                         'tracks' => function($query) {
                             $query->latest();
-                        }, 
-                        'playlists', 
+                        },
+                        'playlists',
                         'albums' => function ($query) {
                             $query->withCount('musics')
-                                    ->latest();
-                        }, 
+                                  ->latest();
+                        },
                         'followers' => function($query) {
                             $query->where('follower_id', auth()->id());
                         }
                     ])
                     ->firstOrFail();
+
+        // Use the model method once to compute boolean for the current viewer
+        $user->is_following = $request->user() ? $request->user()->isFollowing($user) : false;
 
         return inertia('People/Profile', [
             'profile' => $user

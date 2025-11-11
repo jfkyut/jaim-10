@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
         ->name('dashboard')
         ->middleware('admin');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/edit-profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
@@ -84,7 +84,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/redeem/{redeem}/approve', [RedeemController::class, 'approve'])->name('redeem.approve');
     Route::post('/redeem/{redeem}/reject', [RedeemController::class, 'reject'])->name('redeem.reject');
 
-    Route::get('subscriptions', [SubscriptionController::class, 'index'])->name('subscription.index');
+    Route::get('subscription-history', [SubscriptionController::class, 'index'])->name('subscription.index');
+    Route::get('subscriptions', [SubscriptionController::class, 'create'])->name('subscription.create');
     Route::post('subscriptions/{plan}/subscribe', [SubscriptionController::class, 'subscribe'])->name('subscription.subscribe');
     Route::get('subscriptions/success', [SubscriptionController::class, 'success'])->name('subscription.success');
 });

@@ -29,8 +29,6 @@ class User extends Authenticatable
         'credits'
     ];
 
-    protected $appends = ['is_following'];
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -86,14 +84,6 @@ class User extends Authenticatable
     public function isFollowing(User $user)
     {
         return $this->following()->where('following_id', $user->id)->exists();
-    }
-
-    public function getIsFollowingAttribute()
-    {
-        if (!auth()->check()) {
-            return false;
-        }
-        return $this->followers->contains(auth()->user());
     }
 
     public function favorites()

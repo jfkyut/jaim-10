@@ -21,7 +21,7 @@ defineProps({
                 v-if="$page.props.auth.user"
                 :href="route('dashboard')"
                 class="font-semibold text-gray-200 hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-green-500"
-                >Creator Dashboard</Link>
+            >Home</Link>
 
             <template v-else>
                 <Link

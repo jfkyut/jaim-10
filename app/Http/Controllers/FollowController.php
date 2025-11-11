@@ -17,12 +17,11 @@ class FollowController extends Controller
             return response()->json(['message' => 'Cannot follow yourself.'], 422);
         }
 
-        // Attach from the authenticated user's side; idempotent (no duplicate due to syncWithoutDetaching)
         DB::transaction(function () use ($follower, $user) {
+            // Attach idempotently (no duplicate pivot row)
             $follower->following()->syncWithoutDetaching($user->id);
         });
 
-        // Return minimal payload to avoid recursive relationship serialization
         return response()->json([
             'followers_count' => $user->followers()->count(),
             'is_following' => $follower->isFollowing($user),

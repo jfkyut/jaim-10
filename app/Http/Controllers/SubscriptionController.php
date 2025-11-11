@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Plan;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 
@@ -13,9 +14,9 @@ class SubscriptionController extends Controller
     public function index()
     {
         $subscriptions = Subscription::where('user_id', auth()->id())
-                            ->with('plan')
-                            ->latest()
-                            ->paginate(100);
+                                    ->with('plan')
+                                    ->latest()
+                                    ->paginate(100);
 
         return inertia('SubscriptionPlan/SubscriptionHistory', [
             'subscriptions' => $subscriptions

@@ -166,16 +166,28 @@ onUnmounted(() => {
                         <span class="ms-2">My Albums</span>
                     </NavLink>
                 </NavDropdown>
-                
-                <NavLink v-if="$page.props.auth.user" :href="route('subscription.create')" :active="route().current('subscription.*')" class="mb-2 flex items-center">
-                    <i class="ri-money-dollar-circle-line"></i>
-                    <span class="ms-2" v-if="sidebarOpen">Subscription Plans</span>
-                </NavLink>
 
-                <NavLink v-if="$page.props.auth.user" :href="route('subscription.index')" :active="route().current('subscription.*')" class="mb-2 flex items-center">
-                    <i class="ri-file-history-line"></i>
-                    <span class="ms-2" v-if="sidebarOpen">Subscription History</span>
-                </NavLink>
+                <NavDropdown 
+                    title="Subscription Plans" 
+                    v-if="$page.props.auth.user && $page.props.auth.user.role.name !== 'admin'"
+                    :active="route().current('subscription.*')"
+                >
+                    <template #icon>
+                        <i class="ri-money-dollar-circle-line"></i>
+                    </template>
+
+                    <NavLink v-if="$page.props.auth.user" :href="route('subscription.create')" :active="route().current('subscription.create')" class="mb-2 flex items-center">
+                        <i class="ri-money-dollar-circle-line"></i>
+                        <span class="ms-2" v-if="sidebarOpen">Plan</span>
+                    </NavLink>
+
+                    <NavLink v-if="$page.props.auth.user" :href="route('subscription.index')" :active="route().current('subscription.index')" class="mb-2 flex items-center">
+                        <i class="ri-file-history-line"></i>
+                        <span class="ms-2" v-if="sidebarOpen">History</span>
+                    </NavLink>
+                </NavDropdown>
+                
+                
             </nav>
         </div>
 

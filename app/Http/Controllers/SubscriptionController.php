@@ -112,15 +112,19 @@ class SubscriptionController extends Controller
 
     public function success(Request $request)
     {
-        // Create subscription
+        // Create subscription record with 1-month duration
+        // Note: When this subscription expires (ends_at < now()), 
+        // the daily scheduler (CheckExpiredSubscriptions) will automatically 
+        // revert the user's role to 'listener'
         Subscription::create([
             'user_id' => auth()->id(),
             'plan_id' => Session::get('selected_plan_id'),
             'starts_at' => now(),
-            'ends_at' => now()->addMonth(),
+            'ends_at' => now()->addMonth(),  // Subscription valid for 1 month
             'status' => 'active'
         ]);
 
+        // Upgrade user role to 'creator' (role_id = 2) if not already admin
         if ($request->user()->role_id !== 3) {
             $request->user()->role_id = 2;
             $request->user()->save();

@@ -18,6 +18,11 @@ const props = defineProps({
 const { toggleSidebar } = useAuthLayoutStore();
 const { sidebarOpen } = storeToRefs(useAuthLayoutStore());
 
+// Local accent vars (keep consistent with layout)
+const accentText = 'text-emerald-600 dark:text-emerald-400';
+const accentActiveBg = 'bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900 dark:to-green-900';
+const accentHover = 'hover:text-emerald-600 dark:hover:text-emerald-400';
+
 // Generate a unique key for this dropdown based on title
 const storageKey = `navDropdown_${props.title.toLowerCase().replace(/\s+/g, '_')}`;
 
@@ -49,8 +54,10 @@ const buttonClasses = computed(() => {
     return [
         'flex items-center w-full p-2 rounded-lg transition-colors duration-150 ease-in-out',
         {
-            'text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-zinc-700': props.active || isOpen.value,
-            'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-700/50': !props.active && !isOpen.value
+            // active/open state uses accent text + subtle gradient bg
+            [accentText + ' ' + accentActiveBg]: props.active || isOpen.value,
+            // default state uses neutral text with accent hover
+            ['text-zinc-600 dark:text-zinc-400 ' + accentHover + ' hover:bg-zinc-50 dark:hover:bg-zinc-700/50']: !props.active && !isOpen.value
         }
     ];
 });
@@ -81,7 +88,7 @@ const buttonClasses = computed(() => {
             v-show="isOpen && sidebarOpen"
             class="mt-1 space-y-1"
         >
-            <div class="pl-4 pt-2 border-l border-zinc-200 dark:border-zinc-600 space-y-2 overflow-y-auto max-h-[500px]">
+            <div class="pl-4 pt-2 border-l border-emerald-100 dark:border-emerald-800 space-y-2 overflow-y-auto max-h-[500px]">
                 <slot />
             </div>
         </div>

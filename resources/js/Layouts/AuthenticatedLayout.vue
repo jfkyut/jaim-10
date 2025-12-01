@@ -31,6 +31,18 @@ provide('currentAudio', currentGlobalAudio);
 
 const isMobile = ref(window.innerWidth < 768);
 
+// Tailwind accent classes (reusable) — no custom CSS, just class strings
+const accentText = 'text-emerald-600 dark:text-emerald-400';
+const accentGradient = 'bg-gradient-to-r from-emerald-500 via-green-500 to-blue-500';
+const accentActiveBg = 'rounded-md bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900 dark:to-green-900';
+const accentHover = 'hover:text-emerald-600 dark:hover:text-emerald-400';
+// Sidebar-specific softer gradient and subtle ring/shadow when open
+const sidebarSoftGradient = 'bg-gradient-to-b from-emerald-50 via-white to-white dark:from-zinc-900 dark:via-emerald-900 dark:to-zinc-800';
+const sidebarOpenExtras = 'shadow-lg ring-1 ring-emerald-100 dark:ring-emerald-900';
+
+// Helper to return classes for nav items when route active
+const activeNavClass = (isActive) => isActive ? `${accentText} font-semibold ${accentActiveBg}` : '';
+
 const handleResize = () => {
     isMobile.value = window.innerWidth < 768;
     if (isMobile.value && sidebarOpen.value) {
@@ -51,23 +63,35 @@ onUnmounted(() => {
     <div class="min-h-screen flex bg-zinc-100 dark:bg-zinc-900">
         <!-- Sidebar -->
         <div :class="[
-            'transition-all duration-300 ease-in-out bg-white dark:bg-zinc-800 border-r border-zinc-100 dark:border-zinc-700 h-[100vh] z-[100] overflow-y-auto',
+            'transition-all duration-300 ease-in-out border-r border-zinc-100 dark:border-zinc-700 h-[100vh] z-[100] overflow-y-auto',
             'absolute md:relative z-30',
-            sidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0 md:w-20',
+            sidebarOpen ? `translate-x-0 w-64 ${sidebarSoftGradient} ${sidebarOpenExtras}` : '-translate-x-full md:translate-x-0 md:w-20 bg-white dark:bg-zinc-800',
         ]">
             <!-- Logo -->
-            <div class="h-16 flex items-center">
+                <div class="h-16 flex items-center flex-col w-full">
+                    <!-- decorative accent stripe -->
+                    <div class="w-full">
+                        <div class="h-1 w-full rounded-b-md " :class="sidebarOpen ? accentGradient : 'hidden'"></div>
+                    </div>
+                    <div class="flex-1 w-full flex items-center">
                 <!-- <ApplicationLogo class="block h-9 w-auto fill-current text-zinc-800 dark:text-zinc-200" /> -->
-                <header @click="router.get(route('welcome'))" class="mt-4 hover:cursor-pointer w-full font-inter text-4xl font-bold text-center tracking-wide text-zinc-800 dark:text-zinc-200">
+                <header
+                    @click="router.get(route('welcome'))"
+                    :class="[
+                        'mt-4 hover:cursor-pointer w-full font-inter text-4xl font-bold text-center tracking-wide',
+                        sidebarOpen ? accentGradient + ' text-white' : 'text-zinc-800 dark:text-zinc-200'
+                    ]"
+                >
                     <h1 v-if="sidebarOpen">JAM</h1>
                     <h1 v-else>J</h1>
                 </header>
-            </div>
+                    </div>
+                </div>
 
             <!-- Navigation Links -->
             <nav class="mt-8 px-4 overflow-y-auto h-[calc(100vh-4rem)]">
 
-                <NavLink v-if="$page.props.auth.user && $page.props.auth.user.role.name === 'admin'" :href="route('dashboard')" :active="route().current('dashboard')" class="mb-2 flex items-center">
+                <NavLink v-if="$page.props.auth.user && $page.props.auth.user.role.name === 'admin'" :href="route('dashboard')" :active="route().current('dashboard')" :class="['mb-2 flex items-center', activeNavClass(route().current('dashboard')), accentHover]">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
@@ -82,35 +106,35 @@ onUnmounted(() => {
                     <template #icon>
                         <i class="ri-list-check-3"></i>
                     </template>
-                    <NavLink :href="route('redeem.pending')" :active="route().current('redeem.pending')">
+                    <NavLink :href="route('redeem.pending')" :active="route().current('redeem.pending')" :class="[ activeNavClass(route().current('redeem.pending')), accentHover ]">
                         Pending
                     </NavLink>
-                    <NavLink :href="route('redeem.approved')" :active="route().current('redeem.approved')">
+                    <NavLink :href="route('redeem.approved')" :active="route().current('redeem.approved')" :class="[ activeNavClass(route().current('redeem.approved')), accentHover ]">
                         Approved
                     </NavLink>
-                    <NavLink :href="route('redeem.rejected')" :active="route().current('redeem.rejected')">
+                    <NavLink :href="route('redeem.rejected')" :active="route().current('redeem.rejected')" :class="[ activeNavClass(route().current('redeem.rejected')), accentHover ]">
                         Rejected
                     </NavLink>
                 </NavDropdown>
 
-                <NavLink v-if="$page.props.auth.user && $page.props.auth.user.role.name === 'admin'" :href="route('creator.index')" :active="route().current('creator.*')" class="mb-2 flex items-center">
+                <NavLink v-if="$page.props.auth.user && $page.props.auth.user.role.name === 'admin'" :href="route('creator.index')" :active="route().current('creator.*')" :class="['mb-2 flex items-center', activeNavClass(route().current('creator.*')), accentHover]">
                     <i class="ri-user-6-line"></i>
                     <span class="ms-2" v-if="sidebarOpen">Creators</span>
                 </NavLink>
 
-                <NavLink :href="route('music.index')" :active="route().current('music.*')" class="mb-2 flex items-center">
+                <NavLink :href="route('music.index')" :active="route().current('music.*')" :class="['mb-2 flex items-center', activeNavClass(route().current('music.*')), accentHover]">
                     <i class="ri-search-line"></i>
                     <span v-if="sidebarOpen" class="ml-2">Explore Music</span>
                 </NavLink>
 
                 <!-- explore albums -->
-                <NavLink :href="route('album.index')" :active="route().current('album.*')" class="mb-2 flex items-center">
+                <NavLink :href="route('album.index')" :active="route().current('album.*')" :class="['mb-2 flex items-center', activeNavClass(route().current('album.*')), accentHover]">
                     <i class="ri-album-line"></i>
                     <span v-if="sidebarOpen" class="ml-2">Explore Albums</span>
                 </NavLink>
 
                 <!-- creators and listeners -->
-                <NavLink v-if="$page.props.auth.user" :href="route('people.index')" :active="route().current('people.*')" class="mb-2 flex items-center">
+                <NavLink v-if="$page.props.auth.user" :href="route('people.index')" :active="route().current('people.*')" :class="['mb-2 flex items-center', activeNavClass(route().current('people.*')), accentHover]">
                     <i class="ri-group-line"></i>
                     <span class="ms-2" v-if="sidebarOpen">Discover People</span>
                 </NavLink>
@@ -124,7 +148,7 @@ onUnmounted(() => {
                     <template #icon>
                         <i class="ri-music-2-line"></i>
                     </template>
-                    <NavLink :href="route('favorite.index')" :active="route().current('favorite.*')">
+                    <NavLink :href="route('favorite.index')" :active="route().current('favorite.*')" :class="[ 'flex items-center', activeNavClass(route().current('favorite.*')), accentHover ]">
                         <i class="ri-heart-line"></i>
                         <span class="ml-2">Favorites</span>
                     </NavLink>
@@ -145,6 +169,7 @@ onUnmounted(() => {
                             :key="playlist.id"
                             :href="route('playlist.show', playlist.id)"
                             :active="route().current('playlist') && route().params.id == playlist.id"
+                            :class="[ 'px-2 py-1 flex items-center', activeNavClass(route().current('playlist') && route().params.id == playlist.id), accentHover ]"
                         >
                             <i class="ri-playlist-fill"></i>
                             <span class="ms-2">{{ playlist.name }}</span>
@@ -161,7 +186,7 @@ onUnmounted(() => {
                         <i class="ri-folder-2-line"></i>
                     </template>
                     <CreateAlbumModal />
-                    <NavLink :href="route('creation.myAlbums')" :active="route().current('creation.myAlbums')">
+                    <NavLink :href="route('creation.myAlbums')" :active="route().current('creation.myAlbums')" :class="[ 'flex items-center', activeNavClass(route().current('creation.myAlbums')), accentHover ]">
                         <i class="ri-album-line"></i>
                         <span class="ms-2">My Albums</span>
                     </NavLink>
@@ -176,12 +201,12 @@ onUnmounted(() => {
                         <i class="ri-money-dollar-circle-line"></i>
                     </template>
 
-                    <NavLink v-if="$page.props.auth.user" :href="route('subscription.create')" :active="route().current('subscription.create')" class="mb-2 flex items-center">
+                    <NavLink v-if="$page.props.auth.user" :href="route('subscription.create')" :active="route().current('subscription.create')" :class="['mb-2 flex items-center', activeNavClass(route().current('subscription.create')), accentHover]">
                         <i class="ri-money-dollar-circle-line"></i>
                         <span class="ms-2" v-if="sidebarOpen">Plan</span>
                     </NavLink>
 
-                    <NavLink v-if="$page.props.auth.user" :href="route('subscription.index')" :active="route().current('subscription.index')" class="mb-2 flex items-center">
+                    <NavLink v-if="$page.props.auth.user" :href="route('subscription.index')" :active="route().current('subscription.index')" :class="['mb-2 flex items-center', activeNavClass(route().current('subscription.index')), accentHover]">
                         <i class="ri-file-history-line"></i>
                         <span class="ms-2" v-if="sidebarOpen">History</span>
                     </NavLink>

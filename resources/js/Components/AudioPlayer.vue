@@ -96,7 +96,7 @@ onMounted(() => {
     }
     
     volume.value = 0.5;
-    currentTime.value = 60;
+    currentTime.value = 0;
 })
 
 onUnmounted(() => {

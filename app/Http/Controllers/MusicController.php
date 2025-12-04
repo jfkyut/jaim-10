@@ -84,6 +84,7 @@ class MusicController extends Controller
             $music->creator->transactions()->create([
                 'amount' => 1,
                 'credits_change' => 1,
+                'credit_balance' => $music->creator->credits + 1,
                 'balance_after' => $music->creator->credits
             ]);
         });

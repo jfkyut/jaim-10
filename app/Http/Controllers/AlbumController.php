@@ -61,7 +61,8 @@ class AlbumController extends Controller
     {
         return inertia('Album/AlbumDetail', [
             'album' => $album->load(['musics' => function ($musicQuery) {
-                                $musicQuery->with('creator')
+                                $musicQuery->where('status', 'approved')
+                                            ->with('creator')
                                             ->with('album');
                             }])
                             ->load('creator'),

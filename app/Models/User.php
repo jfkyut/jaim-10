@@ -108,9 +108,4 @@ class User extends Authenticatable
             ->where('ends_at', '>', now())
             ->first();
     }
-
-    public function musics()
-    {
-        return $this->hasMany(Music::class, 'user_id');
-    }
 }

@@ -36,7 +36,10 @@ class PeopleController extends Controller
                     },
                 ])
                 ->with([
-                    'tracks',
+                    'tracks' => function ($trackQuery) {
+                        $trackQuery->where('status', 'approved')
+                                    ->latest();
+                    },
                     'playlists',
                     'albums',
                     'following',

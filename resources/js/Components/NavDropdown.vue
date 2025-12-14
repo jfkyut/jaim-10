@@ -15,7 +15,7 @@ const props = defineProps({
     }
 });
 
-const { toggleSidebar } = useAuthLayoutStore();
+const { openSidebar } = useAuthLayoutStore();
 const { sidebarOpen } = storeToRefs(useAuthLayoutStore());
 
 // Local accent vars (keep consistent with layout)
@@ -44,9 +44,9 @@ watch(isOpen, (newValue) => {
 const toggle = () => {
     isOpen.value = !isOpen.value;
 
-    // If on mobile and opening the dropdown, close the sidebar
+    // If the sidebar is closed, open it so the dropdown contents are visible
     if (!sidebarOpen.value) {
-        toggleSidebar();
+        openSidebar();
     }
 };
 

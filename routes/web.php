@@ -88,6 +88,13 @@ Route::middleware('auth')->group(function () {
     Route::get('subscriptions', [SubscriptionController::class, 'create'])->name('subscription.create');
     Route::post('subscriptions/{plan}/subscribe', [SubscriptionController::class, 'subscribe'])->name('subscription.subscribe');
     Route::get('subscriptions/success', [SubscriptionController::class, 'success'])->name('subscription.success');
+
+    Route::get('music-approval/pending', [App\Http\Controllers\MusicApprovalController::class, 'pending'])->name('music-approval.pending');
+    Route::get('music-approval/review', [App\Http\Controllers\MusicApprovalController::class, 'review'])->name('music-approval.review');
+    Route::get('music-approval/approved', [App\Http\Controllers\MusicApprovalController::class, 'approved'])->name('music-approval.approved');
+    Route::get('music-approval/rejected', action: [App\Http\Controllers\MusicApprovalController::class, 'rejected'])->name('music-approval.rejected');
+    Route::get('music-approval/my-musics', [App\Http\Controllers\MusicApprovalController::class, 'myMusics'])->name('creation.myMusics');
+    Route::put('music-approval/{music}/update', [App\Http\Controllers\MusicApprovalController::class, 'update'])->name('music-approval.update');
 });
 
 require __DIR__.'/auth.php';

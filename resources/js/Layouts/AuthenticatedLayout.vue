@@ -21,7 +21,7 @@ import ThemeSwitcher from '@/Components/ThemeSwitcher.vue';
 import DropdownButton from '@/Components/dropdowns/DropdownButton.vue';
 import CreditModal from './authlayout-partials/CreditModal.vue';
 
-const { toggleSidebar } = useAuthLayoutStore();
+const { toggleSidebar, closeSidebar } = useAuthLayoutStore();
 const { sidebarOpen } = storeToRefs(useAuthLayoutStore());
 const audioStore = useAudioStore();
 const { currentSong } = storeToRefs(audioStore);
@@ -46,7 +46,8 @@ const activeNavClass = (isActive) => isActive ? `${accentText} font-semibold ${a
 const handleResize = () => {
     isMobile.value = window.innerWidth < 768;
     if (isMobile.value && sidebarOpen.value) {
-        toggleSidebar();
+        // closing explicitly avoids unexpected toggles
+        closeSidebar();
     }
 };
 
@@ -65,7 +66,8 @@ onUnmounted(() => {
         <div :class="[
             'transition-all duration-300 ease-in-out border-r border-zinc-100 dark:border-zinc-700 h-[100vh] z-[100] overflow-y-auto',
             'absolute md:relative z-30',
-            sidebarOpen ? `translate-x-0 w-64 ${sidebarSoftGradient} ${sidebarOpenExtras}` : '-translate-x-full md:translate-x-0 md:w-20 bg-white dark:bg-zinc-800',
+            // When closed we fully hide the sidebar (no collapsed icon rail)
+            sidebarOpen ? `translate-x-0 w-64 ${sidebarSoftGradient} ${sidebarOpenExtras}` : '-translate-x-full w-0 pointer-events-none',
         ]">
             <!-- Logo -->
                 <div class="h-16 flex items-center flex-col w-full">
@@ -113,6 +115,28 @@ onUnmounted(() => {
                         Approved
                     </NavLink>
                     <NavLink :href="route('redeem.rejected')" :active="route().current('redeem.rejected')" :class="[ activeNavClass(route().current('redeem.rejected')), accentHover ]">
+                        Rejected
+                    </NavLink>
+                </NavDropdown>
+
+                <NavDropdown 
+                    title="Music Approval" 
+                    v-if="$page.props.auth.user && $page.props.auth.user.role.name === 'admin'"
+                    :active="route().current('music-approval.*')"
+                >
+                    <template #icon>
+                        <i class="ri-list-check-3"></i>
+                    </template>
+                    <NavLink :href="route('music-approval.pending')" :active="route().current('music-approval.pending')" :class="[ activeNavClass(route().current('music-approval.pending')), accentHover ]">
+                        Pending
+                    </NavLink>
+                    <NavLink :href="route('music-approval.review')" :active="route().current('music-approval.review')" :class="[ activeNavClass(route().current('music-approval.review')), accentHover ]">
+                        Under Review
+                    </NavLink>
+                    <NavLink :href="route('music-approval.approved')" :active="route().current('music-approval.approved')" :class="[ activeNavClass(route().current('music-approval.approved')), accentHover ]">
+                        Approved
+                    </NavLink>
+                    <NavLink :href="route('music-approval.rejected')" :active="route().current('music-approval.rejected')" :class="[ activeNavClass(route().current('music-approval.rejected')), accentHover ]">
                         Rejected
                     </NavLink>
                 </NavDropdown>
@@ -189,6 +213,10 @@ onUnmounted(() => {
                     <NavLink :href="route('creation.myAlbums')" :active="route().current('creation.myAlbums')" :class="[ 'flex items-center', activeNavClass(route().current('creation.myAlbums')), accentHover ]">
                         <i class="ri-album-line"></i>
                         <span class="ms-2">My Albums</span>
+                    </NavLink>
+                    <NavLink :href="route('creation.myMusics')" :active="route().current('creation.myMusics')" :class="[ 'flex items-center', activeNavClass(route().current('creation.myMusics')), accentHover ]">
+                        <i class="ri-music-2-line"></i>
+                        <span class="ms-2">My Musics</span>
                     </NavLink>
                 </NavDropdown>
 

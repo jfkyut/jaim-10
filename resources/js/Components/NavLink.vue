@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { useAuthLayoutStore } from '@/Stores/authlayout';
 import { storeToRefs } from 'pinia';
@@ -15,9 +15,16 @@ const props = defineProps({
     },
 });
 
-const { toggleSidebar } = useAuthLayoutStore();
+const { closeSidebar } = useAuthLayoutStore();
 const { sidebarOpen } = storeToRefs(useAuthLayoutStore());
 const isMobile = ref(window.innerWidth < 768);
+
+const _handleResize = () => {
+    isMobile.value = window.innerWidth < 768;
+};
+
+onMounted(() => window.addEventListener('resize', _handleResize));
+onUnmounted(() => window.removeEventListener('resize', _handleResize));
 
 const classes = computed(() =>
     props.active
@@ -27,7 +34,7 @@ const classes = computed(() =>
 
 const handleNavClick = () => {
     if (isMobile.value && sidebarOpen.value) {
-        toggleSidebar();
+        closeSidebar();
     }
 };
 </script>

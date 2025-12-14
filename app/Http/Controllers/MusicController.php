@@ -14,6 +14,9 @@ class MusicController extends Controller
         $musicQuery = Music::query();
 
         $musicQuery->where(function ($subQuery) use ($request) {
+            
+            $subQuery->where('status', 'approved');
+            
             if ($request->has('keyword')) {
                 $keyword = $request->input('keyword');
                 $subQuery->where('title', 'like', "%{$keyword}%")

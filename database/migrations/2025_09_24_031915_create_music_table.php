@@ -18,6 +18,13 @@ return new class extends Migration
             $table->date('generated_at');
             $table->longText('description')->nullable();
             $table->longText('lyrics')->nullable();
+            $table->enum('status', [
+                'pending',
+                'under review',
+                'approved',
+                'rejected'
+            ])->default('pending');
+            $table->longText('review_comments')->nullable();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('file_path')->nullable();
             $table->foreignId('album_id')->nullable()->constrained('albums')->cascadeOnDelete();

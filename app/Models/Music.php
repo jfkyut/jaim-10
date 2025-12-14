@@ -16,6 +16,8 @@ class Music extends Model
         'generated_at',
         'description',
         'lyrics',
+        'status',
+        'review_comments',
         'user_id',
         'file_path',
         'album_id'

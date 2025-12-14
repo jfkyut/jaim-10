@@ -42,6 +42,13 @@ class DatabaseSeeder extends Seeder
                 'email' => 'johnsmith@email.com',
                 'role_id' => 1, // listener
                 'password' => Hash::make('testtest')
+            ],
+            [
+                'first_name' => 'jf',
+                'last_name' => 'arnosa',
+                'email' => 'jf.arnosa@gmail.com',
+                'role_id' => 1, // listener
+                'password' => Hash::make('testtest')
             ]
         ];
 

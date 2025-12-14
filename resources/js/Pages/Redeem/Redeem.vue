@@ -30,12 +30,10 @@ const { params } = storeToRefs(useMusicParamStore());
 
         <Container>
             <template #header>
-                <h3 class="text-xl font-semibold text-zinc-900 dark:text-white uppercase">
-                   <SearchForm 
-                        :params="params"
-                        :url="route(route().current())"
-                   />
-                </h3>
+                <SearchForm 
+                    :params="params"
+                    :url="route(route().current())"
+                />
             </template>
             <template #body>
                 <DataTable

@@ -8,11 +8,21 @@ export const useAuthLayoutStore = defineStore('authlayout-store', () => {
         : true
     );
 
+    const openSidebar = () => {
+        sidebarOpen.value = true;
+        sessionStorage.setItem('sidebarOpen', JSON.stringify(sidebarOpen.value));
+    };
+
+    const closeSidebar = () => {
+        sidebarOpen.value = false;
+        sessionStorage.setItem('sidebarOpen', JSON.stringify(sidebarOpen.value));
+    };
+
     const toggleSidebar = () => {
         sidebarOpen.value = !sidebarOpen.value;
         // Save to sessionStorage whenever the value changes
         sessionStorage.setItem('sidebarOpen', JSON.stringify(sidebarOpen.value));
     };
 
-    return { sidebarOpen, toggleSidebar };
+    return { sidebarOpen, toggleSidebar, openSidebar, closeSidebar };
 })

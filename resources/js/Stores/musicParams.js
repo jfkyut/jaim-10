@@ -10,9 +10,6 @@ export const useMusicParamStore = defineStore('music-param-store', () => {
         () => params.value, 
         (newVal) => {
 
-            console.log('params changed', newVal);
-            
-
             sessionStorage.setItem('music-explore-params', JSON.stringify(newVal));
         }, 
         { deep: true }

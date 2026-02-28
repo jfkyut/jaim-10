@@ -104,9 +104,9 @@ defineProps({
             </div>
 
             <!-- Footer -->
-            <div class="mt-32 pb-16 text-center text-gray-400">
-                <p>© 2025 JAIM. All rights reserved.</p>
-            </div>
+            <!-- <div class="mt-32 pb-16 text-center text-gray-400">
+                <p>©  JAM. All rights reserved.</p>
+            </div> -->
         </div>
     </div>
 </template>

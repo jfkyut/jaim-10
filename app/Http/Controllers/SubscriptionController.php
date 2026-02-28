@@ -40,6 +40,7 @@ class SubscriptionController extends Controller
 
     public function subscribe(Request $request, Plan $plan)
     {
+
         $response = Http::withHeaders([
                             'accept' => 'application/json',
                             'authorization' => 'Basic ' . base64_encode(env('PAYMONGO_SECRET_KEY')),
@@ -58,7 +59,7 @@ class SubscriptionController extends Controller
                                         'billing' => [
                                             'address' => [
                                                 'city' => 'Taguig',
-                                                'country' => 'PH', 
+                                                'country' => 'PH',
                                                 'line1' => 'address line 1',
                                                 'line2' => 'address line 2',
                                                 'postal_code' => '1234',
@@ -68,12 +69,12 @@ class SubscriptionController extends Controller
                                             'name' => $request->user()->first_name . ' ' . $request->user()->last_name,
                                             'phone' => null
                                         ],
-                                        'description' => json_decode($plan->features),
+                                        'description' => implode(', ', json_decode($plan->features)),
                                         'line_items' => [
                                             [
                                                 'amount' => $plan->price * 100,
                                                 'currency' => 'PHP',
-                                                'description' => json_decode($plan->features),
+                                                'description' => implode(', ', json_decode($plan->features)),
                                                 // 'images' => [
                                                 //     'https://images.unsplash.com/photo-1612346903007-b5ac8bb135bb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80'
                                                 // ],
@@ -87,7 +88,7 @@ class SubscriptionController extends Controller
                                             'type' => 'payment_intent',
                                             'attributes' => [
                                                 'currency' => 'PHP',
-                                                'description' => explode(', ', $plan->features),
+                                                'description' => implode(', ', json_decode($plan->features)),
                                                 'status' => 'succeeded',
                                                 'statement_descriptor' => 'Paymongo Test Account',
 
@@ -100,6 +101,8 @@ class SubscriptionController extends Controller
                                 ]
                             ]
                         );
+
+        // dd($response->json());
 
         Session::put([
             'selected_plan_id' => $plan->id,

@@ -12,7 +12,8 @@ import Paginator from '@/Components/Paginator.vue';
 import SearchForm from '@/Components/forms/SearchForm.vue';
 
 defineProps({
-    musics: Object
+    musics: Object,
+    pageTitle: String
 })
 
 const { params } = storeToRefs(useMusicParamStore());
@@ -20,16 +21,16 @@ const { params } = storeToRefs(useMusicParamStore());
 </script>
 
 <template>
-    <Head title="Music Approval" />
+    <Head title="{{ pageTitle }}" />
 
     <AuthenticatedLayout>
         <template #header>
-            Music Approval
+            {{ pageTitle }}
         </template>
 
         <Container>
             <template #header>
-                <SearchForm 
+                <SearchForm
                     :params="params"
                     :url="route(route().current())"
                 />

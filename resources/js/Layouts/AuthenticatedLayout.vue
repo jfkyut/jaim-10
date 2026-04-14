@@ -202,7 +202,7 @@ onUnmounted(() => {
                     
                 </NavDropdown>
                 <NavDropdown
-                    v-if="$page.props.auth.user.role.name !== 'listener'"
+                    v-if="$page.props.auth.user.role.name !== 'listener' && $page.props.auth.user.role.name !== 'admin'"
                     title="My Creations"
                     :active="route().current('creation.*')"
                 >

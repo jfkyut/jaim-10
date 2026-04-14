@@ -43,8 +43,18 @@ const submit = () => {
         <Head title="Log in" />
 
         <template #header>
+            <div>
+                <Checkbox v-model="form.agree" binary />
+                <TermsModal />
+                <div class="mt-2">
+                    <InputError :message="form.errors.agree" class="mt-2" />
+                </div>
+            </div>
+
             <h5>Sign in to our platform</h5>
         </template>
+
+        
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
@@ -76,13 +86,7 @@ const submit = () => {
                 <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
                     Not registered? <a :href="route('register')" class="text-teal-700 hover:underline dark:text-teal-500">Create account</a>
                 </div>
-                <div>
-                    <Checkbox v-model="form.agree" binary />
-                    <TermsModal />
-                    <div class="mt-2">
-                        <InputError :message="form.errors.agree" class="mt-2" />
-                    </div>
-                </div>
+                
             </div>
         </form>
     </GuestLayout>

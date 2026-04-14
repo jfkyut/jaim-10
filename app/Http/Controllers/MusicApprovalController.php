@@ -25,7 +25,8 @@ class MusicApprovalController extends Controller
                                         'album'
                                     ])
                                     ->latest()
-                                    ->paginate(100)
+                                    ->paginate(100),
+            'pageTitle' => 'Pending Music Approvals'
         ]);
     }
 
@@ -45,7 +46,8 @@ class MusicApprovalController extends Controller
                                         'album'
                                     ])
                                     ->latest()
-                                    ->paginate(100)
+                                    ->paginate(100),
+            'pageTitle' => 'Music Under Review'
         ]);
     }
 
@@ -65,7 +67,8 @@ class MusicApprovalController extends Controller
                                         'album'
                                     ])
                                     ->latest()
-                                    ->paginate(100)
+                                    ->paginate(100),
+            'pageTitle' => 'Approved Music'
         ]);
     }
 
@@ -85,7 +88,8 @@ class MusicApprovalController extends Controller
                                         'album'
                                     ])
                                     ->latest()
-                                    ->paginate(100)
+                                    ->paginate(100),
+            'pageTitle' => 'Rejected Music'
         ]);
     }
 
@@ -107,7 +111,8 @@ class MusicApprovalController extends Controller
                                         'album'
                                     ])
                                     ->latest()
-                                    ->paginate(100)
+                                    ->paginate(100),
+            'pageTitle' => 'My Musics'
         ]);
     }
 

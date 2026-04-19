@@ -29,6 +29,10 @@ const { currentSong } = storeToRefs(audioStore);
 const currentGlobalAudio = ref(null);
 provide('currentAudio', currentGlobalAudio);
 
+const closeAudioPlayer = () => {
+    audioStore.currentSong = null;
+};
+
 const isMobile = ref(window.innerWidth < 768);
 
 // Tailwind accent classes (reusable) — no custom CSS, just class strings
@@ -310,13 +314,13 @@ onUnmounted(() => {
                 <!-- <Ad /> -->
 
                 <!-- Audio Player -->
-                <div v-if="currentSong" class="fixed bottom-2 left-0 right-0 z-40">
-                    <AudioPlayer 
+                <div v-if="currentSong" class="fixed bottom-2 left-0 right-0 z-40\">\n                    <AudioPlayer 
                         :src="`/storage/${currentSong.file_path}`"
                         :title="currentSong.title"
                         :autoplay="true"
                         :creator="currentSong.creator"
                         :album_cover="currentSong?.album?.photo_path"
+                        @close="closeAudioPlayer"
                     />
                 </div>
             </main>

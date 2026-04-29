@@ -97,6 +97,15 @@ const handleNext = () => {
     }
 }
 
+const downloadSong = () => {
+    const link = document.createElement('a');
+    link.href = src.value;
+    link.download = `${title.value}.mp3`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 onMounted(() => {
     if (audio.value) {
         audio.value.addEventListener('ended', handleSongEnd);
@@ -172,6 +181,9 @@ onUnmounted(() => {
                 </button>
                 <button @click="handleNext" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
                     <i class="ri-skip-forward-line text-xl"></i>
+                </button>
+                <button @click="downloadSong" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
+                    <i class="ri-download-line text-xl"></i>
                 </button>
             </div>
 

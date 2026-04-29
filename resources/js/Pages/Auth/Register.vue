@@ -18,9 +18,9 @@ const form = useForm({
 });
 
 const genderoptions = [
-    'male',
-    'female',
-    'prefer not to tell'
+    'MALE',
+    'FEMALE',
+    'PREFER NOT TO TELL'
 ]
 
 const submit = () => {

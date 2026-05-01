@@ -23,6 +23,10 @@ const { currentSong } = storeToRefs(useAudioStore());
 const isLoading = ref(false);
 
 const playSong = (music) => {
+    if (music.status !== 'approved') {
+        return
+    }
+
     audioStore.playSong(music)
 }
 
@@ -71,7 +75,9 @@ const toggleFavorite = (music) => {
                     <!-- Play Button Overlay -->
                     <button 
                         @click="playSong(music)"
-                        class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+                        :disabled="music.status !== 'approved'"
+                        :title="music.status !== 'approved' ? 'Track not approved yet' : 'Play track'"
+                        class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         <i 
                             :class="[

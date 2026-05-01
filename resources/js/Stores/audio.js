@@ -8,38 +8,71 @@ export const useAudioStore = defineStore('audio', () => {
     const queue = ref([])
     const currentIndex = ref(-1)
 
-    // actions
-    function playSong(song, index = null) {
-        if (index !== null) {
-            currentIndex.value = index
+    const isApproved = (song) => song && song.status === 'approved'
+
+    function playSong(song) {
+        if (!isApproved(song)) {
+            return false
         }
+
+        const queueIndex = queue.value.findIndex((item) => item.id === song.id)
+        if (queueIndex !== -1) {
+            currentIndex.value = queueIndex
+        }
+
         currentSong.value = song
+        return true
     }
 
     function playNext() {
-        if (currentIndex.value < queue.value.length - 1) {
-            currentIndex.value++
-            currentSong.value = queue.value[currentIndex.value]
-            return true
+        let nextIndex = currentIndex.value + 1
+        while (nextIndex < queue.value.length) {
+            if (isApproved(queue.value[nextIndex])) {
+                currentIndex.value = nextIndex
+                currentSong.value = queue.value[currentIndex.value]
+                return true
+            }
+            nextIndex++
         }
+
         return false
     }
 
     function playPrevious() {
-        if (currentIndex.value > 0) {
-            currentIndex.value--
-            currentSong.value = queue.value[currentIndex.value]
-            return true
+        let prevIndex = currentIndex.value - 1
+        while (prevIndex >= 0) {
+            if (isApproved(queue.value[prevIndex])) {
+                currentIndex.value = prevIndex
+                currentSong.value = queue.value[currentIndex.value]
+                return true
+            }
+            prevIndex--
         }
+
         return false
     }
 
     function setQueue(songs, startIndex = 0) {
-        queue.value = songs
-        currentIndex.value = startIndex
-        if (songs.length > 0) {
-            currentSong.value = songs[startIndex]
+        const approvedSongs = songs.filter((song) => isApproved(song))
+        queue.value = approvedSongs
+
+        if (approvedSongs.length === 0) {
+            currentIndex.value = -1
+            currentSong.value = null
+            return
         }
+
+        let selectedSong = null
+        if (startIndex >= 0 && startIndex < songs.length) {
+            selectedSong = songs.slice(startIndex).find((song) => isApproved(song))
+        }
+
+        if (!selectedSong) {
+            selectedSong = approvedSongs[0]
+        }
+
+        currentIndex.value = approvedSongs.findIndex((song) => song.id === selectedSong.id)
+        currentSong.value = selectedSong
     }
 
     function setIsPlaying(status) {

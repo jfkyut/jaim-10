@@ -3,7 +3,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import MusicCard from '@/Components/MusicCard.vue';
 import { Head } from '@inertiajs/vue3';
 import { onMounted, toRefs } from 'vue';
-import { storeToRefs } from 'pinia';
 import { useAudioStore } from '@/Stores/audio';
 
 const props = defineProps({ 
@@ -15,11 +14,11 @@ const props = defineProps({
 
 const { album } = toRefs(props);
 
-const { queue } = storeToRefs(useAudioStore());
+const audioStore = useAudioStore();
 
 onMounted(() => {
     setTimeout(() => {
-        queue.value = album.value.musics || [];
+        audioStore.setQueue(album.value.musics || [], 0);
     }, 500);
 })
 

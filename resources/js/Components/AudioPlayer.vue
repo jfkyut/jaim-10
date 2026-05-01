@@ -182,7 +182,7 @@ onUnmounted(() => {
                 <button @click="handleNext" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
                     <i class="ri-skip-forward-line text-xl"></i>
                 </button>
-                <button @click="downloadSong" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
+                <button v-if="$page.props.auth.user && $page.props.auth.user.role.name === 'creator'" @click="downloadSong" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none">
                     <i class="ri-download-line text-xl"></i>
                 </button>
             </div>

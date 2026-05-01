@@ -124,7 +124,7 @@ const submit = () => {
                             class="block w-full" 
                         />
                     </div>
-                    <div class="space-y-2">
+                    <!-- <div class="space-y-2">
                         <label for="description">Description</label>
                         <Textarea 
                             v-model="form.description"
@@ -145,7 +145,7 @@ const submit = () => {
                             placeholder="Lyrics of the track..."
                             auto-resize
                         />
-                    </div>
+                    </div> -->
                     <button ref="submitButtonRef" class="sr-only"></button>
                 </form>
             </template>
